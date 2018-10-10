@@ -1,0 +1,6 @@
+exportPattern("^[^\\.]")
+
+import(methods)
+import(stats)
+
+#S3method(print, blah)
