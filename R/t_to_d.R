@@ -2,6 +2,20 @@
 #' 
 #' This function converts Student's *t* to Cohen's *d*.
 #' 
+#' The formula that is used is the following (see e.g. Lakens, 2013):
+#' 
+### Wolfgang & Simon:
+### So, LaTeX math can just be used, like in regular manual files, see:
+###
+### https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Mathematics
+###
+### So: use \eqn or \dqn depending on whether you want inline or 'display';
+### and specify two arguments, where the first is LaTeX for processing into
+### PDF for the manual, and the second one ASCII for contexts that don't
+### support e.g. MathJax. The pkgdown site 
+#' 
+#' \deqn{d= t \sqrt{(\frac{1}{n_1} + \frac{1}{n_2})}}{d=t*sqrt(1/n1 + 1/n2))}
+#' 
 #' @param t The *t* value.
 #' @param df The degrees of freedom of `t`; either provide this `proportion`,
 #' or `n1` and `n1`.
@@ -12,33 +26,55 @@
 #' 
 #' @return A numeric vector of Cohen's `d` values.
 #' 
-#' @examples transformer::t_to_d(t = 2.85, df = 128);
+#' @references Lakens, D. (2013) Calculating and reporting effect sizes to
+#' facilitate cumulative science: a practical primer for t-tests and ANOVAs.
+#' *Frontiers in Psychology, 4*, p. 863. \doi{10.3389/fpsyg.2013.00863}
+#' 
+#' @examples escalc::t_to_d(t = 2.85, df = 128);
 #'
 #' @export
-t_to_d <- function(t, df, n1=NULL, n2=NULL, proportion=.5) {
+t_to_d <- function(t, df, n1, n2, proportion=.5) {
 
+  ###------------------------------------------------------------------------ t
+  ### Argument-checking - Check presence
+  ###------------------------------------------------------------------------ t
   if (missing(t)) {
-    stop(.transformer_errmsg(missing='t',
-                             callingFunction = .curfnfinder()))
+    stop(.errmsg(missing='t',
+                 callingFunction = .curfnfinder()))
   } else {
     
-    if (!is.numeric(t)) {
-      stop(.transformer_errmsg(wrongType=list(argName='t',
-                                              providedType=class(t),
-                                              requiredType='numeric'),
-                               callingFunction = .curfnfinder()))
+    ###---------------------------------------------------------------------- t
+    ### Argument-checking - Check NA, NULL, and class
+    ###---------------------------------------------------------------------- t
+    if (is.null(t) || is.na(t)) {
+      stop(.errmsg(cantBeNullOrNA=list(argName='t',
+                                       argVal = t),
+                   callingFunction = .curfnfinder()))
+    } else if (!is.numeric(t)) {
+      stop(.errmsg(wrongType=list(argName='t',
+                                  providedType=class(t),
+                                  requiredType='numeric'),
+                   callingFunction = .curfnfinder()))
+    }
+    
+    ###--------------------------------------------------------------------- df
+    ### Argument-checking - Check presence
+    ###--------------------------------------------------------------------- df
+    if (!missing(df)) {
+      if (missing(proportion) || (is.null(proportion) || is.na(proportion))) {
+      stop(.errmsg(conditionalMissing=list(provided='df',
+                                           missing='proportion'),
+                   callingFunction = .curfnfinder()))
+      } else {
+      }
       
     }
     
     if (missing(df) && (missing(n1) && missing(n2))) {
-      stop(.transformer_errmsg(conditionalMissing=list(provided=c('t'),
-                                                       missing=list('df',
-                                                                    c('n1', 'n2'))),
-                               callingFunction = .curfnfinder()))
-    } else if (!missing(df) && (is.null(proportion) || is.na(proportion))) {
-      stop(.transformer_errmsg(conditionalMissing=list(provided='df',
-                                                       missing='proportion'),
-                               callingFunction = .curfnfinder()))
+      stop(.errmsg(conditionalMissing=list(provided=c('t'),
+                                           missing=list('df',
+                                                        c('n1', 'n2'))),
+                   callingFunction = .curfnfinder()))
     }
   }
   

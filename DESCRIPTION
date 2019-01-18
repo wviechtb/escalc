@@ -1,6 +1,6 @@
-Package: transformer
+Package: escalc
 Version: 0.1-0
-Date: 2018-10-10
+Date: 2019-09-10
 Title: Package for Computing Effect Sizes
 Authors@R: c(person("Wolfgang", "Viechtbauer", email = "wvb@wvauer.com", role = c("aut","cre")), person("Gjalt-Jorn", "Peters", email = "gjalt-jorn@behaviorchange.eu", role = c("aut")), person("Simon", "Columbus", email = "simoncolumbus@gmail.com", role = c("aut")))
 Depends: R (>= 3.2.0)
@@ -10,3 +10,6 @@ License: GPL (>=2)
 ByteCompile: TRUE
 LazyData: TRUE
 Encoding: UTF-8
+RoxygenNote: 6.1.1
+Roxygen: list(markdown = TRUE)
+URL: https://escalc.opens.science

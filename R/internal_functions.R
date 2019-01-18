@@ -1,6 +1,6 @@
 ### This function creates consistent, userfriendly error messages.
 
-.transformer_errmsg <- function(...) {
+.errmsg <- function(...) {
   
   pkgname <- 'transformer';
   
@@ -29,6 +29,7 @@
              ".")
   }
   
+  ### If `wrongType` is provided, an argument has the wrong type.
   if ('wrongType' %in% names(args)) {
     errorMsg <-
       paste0("You provided an object of class '",
@@ -37,7 +38,19 @@
              args$wrongType$argName,
              "', but an object of class '",
              args$wrongType$requiredType,
-             "' is required.");
+             "' is required.")
+  }
+
+  ### If `cantBeNullOrNA` is provided, an argument is NULL or NA but shouldn't be  
+  if ('cantBeNullOrNA' %in% names(args)) {
+    errorMsg <-
+      paste0("For argument '",
+             args$cantBeNullOrNA$argName,
+             "', you provided ",
+             ifelse(is.null(args$cantBeNullOrNA$argVal),
+                    'NULL',
+                    'NA'),
+             ", but this is not allowed.")
   }
   
   return(paste0(errorMsg,
