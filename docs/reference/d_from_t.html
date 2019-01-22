@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • escalc</title>
+<title>Obtain Cohen's <em>d</em> from Student's <em>t</em> — d_from_t • escalc</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Obtain Cohen's <em>d</em> from Student's <em>t</em> — d_from_t" />
+
+<meta property="og:description" content="This function converts Student's t to Cohen's d." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -46,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -87,42 +90,79 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Obtain Cohen's <em>d</em> from Student's <em>t</em></h1>
+    
+    <div class="hidden name"><code>d_from_t.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>This function converts Student's <em>t</em> to Cohen's <em>d</em>.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="d_from_t.html">d_from_t()</a></code> </p>
-        </td>
-        <td><p>Obtain Cohen's <em>d</em> from Student's <em>t</em></p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>d_from_t</span>(<span class='no'>t</span>, <span class='no'>df</span>, <span class='no'>n1</span>, <span class='no'>n2</span>, <span class='kw'>proportion</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>t</th>
+      <td><p>The <em>t</em> value.</p></td>
+    </tr>
+    <tr>
+      <th>df</th>
+      <td><p>The degrees of freedom of <code>t</code>; either provide this <code>proportion</code>,
+or <code>n1</code> and <code>n1</code>.</p></td>
+    </tr>
+    <tr>
+      <th>n1, n2</th>
+      <td><p>The sample sizes of the two groups formed by the dichotomous
+variable.</p></td>
+    </tr>
+    <tr>
+      <th>proportion</th>
+      <td><p>The proportion of participants in the first (or second)
+group; must be specified if <code>df</code> is specified.</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A numeric vector of Cohen's <code>d</code> values.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The formula that is used is the following (see e.g. Lakens, 2013):</p>
+<p>$$d= t \sqrt{(\frac{1}{n_1} + \frac{1}{n_2})}$$</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Lakens, D. (2013) Calculating and reporting effect sizes to
+facilitate cumulative science: a practical primer for t-tests and ANOVAs.
+<em>Frontiers in Psychology, 4</em>, p. 863. doi: <a href='http://doi.org/10.3389/fpsyg.2013.00863'>10.3389/fpsyg.2013.00863</a></p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw pkg'>escalc</span><span class='kw ns'>::</span><span class='fu'>t_to_d</span>(<span class='kw'>t</span> <span class='kw'>=</span> <span class='fl'>2.85</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>128</span>);</div><div class='output co'>#&gt; <span class='error'>Error: 't_to_d' is not an exported object from 'namespace:escalc'</span></div><div class='input'>
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#references">References</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 
