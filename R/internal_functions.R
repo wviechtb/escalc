@@ -13,6 +13,16 @@
              args$missing,
              "' is missing, but must be provided!")
   }
+
+  ### If `differentLengths` is provided, argument lengths differ
+  if ('differentLengths' %in% names(args)) {
+    errorMsg <-
+      paste0("The lengths of arguments ",
+             .vecTxtQ(args$differentLengths$argNames),
+             " must all be the same, but are ",
+             .vecTxt(args$differentLengths$argLengths),
+             ".")
+  }
   
   ### If `conditionalMissing` is provided, one or more required arguments
   ### were provided, but one or more additional arguments that is/are required

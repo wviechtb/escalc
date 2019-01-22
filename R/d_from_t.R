@@ -61,7 +61,9 @@ d_from_t <- function(t, df, n1, n2, proportion=.5) {
   ### Argument-checking - Check presence
   ###--------------------------------------------------------------- df, n1, n2
   if (!missing(df)) {
-    if (missing(proportion) || (is.null(proportion) || is.na(proportion))) {
+    ### `proportion` has a default value of .5, so can be overridden
+    ### with NULL or NA, but never (correctly) be 'missing'
+    if (is.null(proportion) || is.na(proportion)) {
       stop(.errmsg(conditionalMissing=list(provided='df',
                                            missing='proportion'),
                    callingFunction = .curfnfinder()))
@@ -81,7 +83,7 @@ d_from_t <- function(t, df, n1, n2, proportion=.5) {
   ###----------------------------------------------------------------------- df
   
   if (!missing(df)) {
-    if (!(is.numeric(df) && (df > 2))) {
+    if (!(is.numeric(df) && (all(df > 2)))) {
       stop(.errmsg(invalidValue=list(argName="df",
                                      argVal=df,
                                      validValues="higher than 2"),
@@ -94,7 +96,7 @@ d_from_t <- function(t, df, n1, n2, proportion=.5) {
   ###--------------------------------------------------------------- proportion
   
   if (!missing(proportion)) {
-    if ((proportion * (df + 2)) < 2) {
+    if (any((proportion * (df + 2)) < 2)) {
       stop(.errmsg(invalidValueCombo=
                      list(argName=c("df", "proportion"),
                           argVal=c(df, proportion),
@@ -105,33 +107,47 @@ d_from_t <- function(t, df, n1, n2, proportion=.5) {
     }
   }
 
+  ###--------------------------------------------------------------- t, n1 & n2
+  ### Argument checking: lengths
+  ###--------------------------------------------------------------- t, n1 & n2
+  
+  if (!missing(n1) && !missing(n2)) {
+    argLengths <- c(length(t), length(n2), length(n2));
+    if (length(unique(argLengths)) > 1) {
+      stop(.errmsg(differentLengths =
+                     list(argNames=c("t", "n1", "n2"),
+                          argLengths=argLengths),
+                   callingFunction = .curfnfinder()))
+    }
+  }
+    
+  ###------------------------------------------------------- t, df & proportion
+  ### Argument checking: lengths
+  ###------------------------------------------------------- t, df & proportion
+  
+  if (!missing(df)) {
+    argLengths <- c(length(t), length(df), length(proportion));
+    if (length(unique(argLengths)) > 1) {
+      stop(.errmsg(differentLengths =
+                     list(argNames=c("t", "df", "proportion"),
+                          argLengths=argLengths),
+                   callingFunction = .curfnfinder()))
+    }
+  }
+    
   ###---------------------------------------------------------- df & proportion
   ### Argument preprocessing
   ###---------------------------------------------------------- df & proportion
   
-  if (!missing(proportion)) {
-    n1 <- proportion * (df+2);
-    n2 <- (1-proportion) * (df+2);
+  if (!missing(df)) {
+    n1 <-      proportion  * (df + 2);
+    n2 <- (1 - proportion) * (df + 2);
   }
-  
-  
-  if (is.null(df) && !is.null(n1) && !is.null(n2)) {
-    groupSize1 <- n1;
-    groupSize2 <- n2;
-  }
-  else if (!is.null(df) && is.null(n1) && is.null(n2)) {
-    groupSize1 <-      proportion  * (df + 2);
-    groupSize2 <- (1 - proportion) * (df + 2);
-  }
-  else {
-    warning("Specify either df (and ideally proportion) or n1 and n2! Returning NA.");
-    return(NA);
-  }
-  
+
   ### Updated to reflect http://journal.frontiersin.org/article/10.3389/fpsyg.2013.00863/full
   #   multiplier <- sqrt(((groupSize1 + groupSize2) / (groupSize1 * groupSize2)) *
   #                        ((groupSize1 + groupSize2) / (groupSize1 + groupSize2 - 2)));
-  multiplier <- sqrt((1 / groupSize1) + (1 / groupSize2));
+  multiplier <- sqrt((1 / n1) + (1 / n2));
   
   d <- t * multiplier;
   
