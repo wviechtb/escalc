@@ -1,4 +1,4 @@
-#' Student's *t* to Cohen's *d*
+#' Obtain Cohen's *d* from Student's *t*
 #' 
 #' This function converts Student's *t* to Cohen's *d*.
 #' 
@@ -33,7 +33,7 @@
 #' @examples escalc::t_to_d(t = 2.85, df = 128);
 #'
 #' @export
-t_to_d <- function(t, df, n1, n2, proportion=.5) {
+d_from_t <- function(t, df, n1, n2, proportion=.5) {
 
   ###------------------------------------------------------------------------ t
   ### Argument-checking - Check presence
@@ -41,54 +41,78 @@ t_to_d <- function(t, df, n1, n2, proportion=.5) {
   if (missing(t)) {
     stop(.errmsg(missing='t',
                  callingFunction = .curfnfinder()))
-  } else {
+  }
     
-    ###---------------------------------------------------------------------- t
-    ### Argument-checking - Check NA, NULL, and class
-    ###---------------------------------------------------------------------- t
-    if (is.null(t) || is.na(t)) {
-      stop(.errmsg(cantBeNullOrNA=list(argName='t',
-                                       argVal = t),
-                   callingFunction = .curfnfinder()))
-    } else if (!is.numeric(t)) {
-      stop(.errmsg(wrongType=list(argName='t',
-                                  providedType=class(t),
-                                  requiredType='numeric'),
-                   callingFunction = .curfnfinder()))
-    }
-    
-    ###--------------------------------------------------------------------- df
-    ### Argument-checking - Check presence
-    ###--------------------------------------------------------------------- df
-    if (!missing(df)) {
-      if (missing(proportion) || (is.null(proportion) || is.na(proportion))) {
+  ###------------------------------------------------------------------------ t
+  ### Argument-checking - Check NA, NULL, and class
+  ###------------------------------------------------------------------------ t
+  if (is.null(t) || is.na(t)) {
+    stop(.errmsg(cantBeNullOrNA=list(argName='t',
+                                     argVal = t),
+                 callingFunction = .curfnfinder()))
+  } else if (!is.numeric(t)) {
+    stop(.errmsg(wrongType=list(argName='t',
+                                providedType=class(t),
+                                requiredType='numeric'),
+                 callingFunction = .curfnfinder()))
+  }
+  
+  ###--------------------------------------------------------------- df, n1, n2
+  ### Argument-checking - Check presence
+  ###--------------------------------------------------------------- df, n1, n2
+  if (!missing(df)) {
+    if (missing(proportion) || (is.null(proportion) || is.na(proportion))) {
       stop(.errmsg(conditionalMissing=list(provided='df',
                                            missing='proportion'),
                    callingFunction = .curfnfinder()))
-      } else {
-      }
-      
     }
-    
-    if (missing(df) && (missing(n1) && missing(n2))) {
+  } else {
+    ### df is missing
+    if (missing(n1) || missing(n2)) {
       stop(.errmsg(conditionalMissing=list(provided=c('t'),
                                            missing=list('df',
                                                         c('n1', 'n2'))),
                    callingFunction = .curfnfinder()))
     }
   }
-  
-  
-  
 
-  if (missing(t) || missing(df)) {
-    #if (missing(
+  ###----------------------------------------------------------------------- df
+  ### Argument checking - Check valid values
+  ###----------------------------------------------------------------------- df
+  
+  if (!missing(df)) {
+    if (!(is.numeric(df) && (df > 2))) {
+      stop(.errmsg(invalidValue=list(argName="df",
+                                     argVal=df,
+                                     validValues="higher than 2"),
+                   callingFunction = .curfnfinder()))
+    }
   }
   
+  ###--------------------------------------------------------------- proportion
+  ### Argument checking - Check valid values
+  ###--------------------------------------------------------------- proportion
   
-  # assertthat::are_equal(length(t),
-  #                       length(df)
-  #                       length(n1)
+  if (!missing(proportion)) {
+    if ((proportion * (df + 2)) < 2) {
+      stop(.errmsg(invalidValueCombo=
+                     list(argName=c("df", "proportion"),
+                          argVal=c(df, proportion),
+                          validValues=paste0("the product of ",
+                                             "proportion and (df+2) ",
+                                              "must be larger than 2")),
+                   callingFunction = .curfnfinder()))
+    }
+  }
+
+  ###---------------------------------------------------------- df & proportion
+  ### Argument preprocessing
+  ###---------------------------------------------------------- df & proportion
+  
+  if (!missing(proportion)) {
+    n1 <- proportion * (df+2);
+    n2 <- (1-proportion) * (df+2);
+  }
   
   
   if (is.null(df) && !is.null(n1) && !is.null(n2)) {

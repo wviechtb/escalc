@@ -52,6 +52,34 @@
                     'NA'),
              ", but this is not allowed.")
   }
+
+  ### If `invalidValue` is provided, an argument has an invalid value.
+  if ('invalidValue' %in% names(args)) {
+    errorMsg <-
+      paste0("As value of argument '",
+             args$invalidValue$argName,
+             "' you provided  '",
+             args$invalidValue$argVal,
+             "', but that is an invalid value. ",
+             args$invalidValue$argName,
+             " has to be ",
+             args$invalidValue$validValues,
+             ".")
+  }
+
+  ### If `invalidValueCombo` is provided, two or more arguments combine
+  ### in a way that results in an invalid value.
+  if ('invalidValueCombo' %in% names(args)) {
+    errorMsg <-
+      paste0("As value of arguments ",
+             .vecTxtQ(args$invalidValueCombo$argName),
+             " you provided values ",
+             .vecTxtQ(args$invalidValueCombo$argVal),
+             ", respectively. However, these values combined ",
+             "in an invalid way. Specifically, ",
+             args$invalidValueCombo$validValues,
+             ".")
+  }
   
   return(paste0(errorMsg,
                 " You can get more details by typing:\n\n  ?",
