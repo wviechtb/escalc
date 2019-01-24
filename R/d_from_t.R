@@ -144,12 +144,24 @@ d_from_t <- function(t, df, n1, n2, proportion=.5) {
     n2 <- (1 - proportion) * (df + 2);
   }
 
+  ###--------------------------------------------------------------------------
+  ###
+  ###  Actual functionality
+  ###
+  ###--------------------------------------------------------------------------
+  
   ### Updated to reflect http://journal.frontiersin.org/article/10.3389/fpsyg.2013.00863/full
   #   multiplier <- sqrt(((groupSize1 + groupSize2) / (groupSize1 * groupSize2)) *
   #                        ((groupSize1 + groupSize2) / (groupSize1 + groupSize2 - 2)));
   multiplier <- sqrt((1 / n1) + (1 / n2));
   
   d <- t * multiplier;
+
+  ###--------------------------------------------------------------------------
+  ###
+  ###  Return result
+  ###
+  ###--------------------------------------------------------------------------
   
   return(d);
 }
