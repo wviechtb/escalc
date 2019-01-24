@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 The goal of escalc is to provide a home for various functions to convert effect sizes.
 
-[![Travis build status](https://travis-ci.org/wviechtb/transformer.svg?branch=master)](https://travis-ci.org/wviechtb/transformer)
+[![Travis build status](https://travis-ci.org/wviechtb/escalc.svg?branch=master)](https://travis-ci.org/wviechtb/escalc)
 
 
 ## Code of conduct
