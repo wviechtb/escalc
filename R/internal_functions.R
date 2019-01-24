@@ -1,9 +1,12 @@
-### This function creates consistent, userfriendly error messages.
+### Internal variables to allow flexibility, should we need it in the future,
+### yet retain consistency
+.PACKAGENAME <- 'escalc';
+.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF <- 'yi';
+.EFFECTSIZE_VARIANCE_NAME_IN_DF <- 'vi';
 
+### This function creates consistent, userfriendly error messages.
 .errmsg <- function(...) {
-  
-  pkgname <- 'transformer';
-  
+
   args <- list(...)
   
   ### If `missing` is provided, a required argument is missing.
@@ -37,6 +40,20 @@
              " you must also provide ",
              .conditionalMissingList(args$conditionalMissing$missing),
              ".")
+  }
+
+  ### If `argumentRedundancy` is provided, conflicting arguments are provided
+  if ('argumentRedundancy' %in% names(args)) {
+    errorMsg <-
+      paste0("You provided conflicting arguments, specifically, both ",
+             .vecTxtQ(args$argumentRedundancy$argNames1),
+             " *and* ",
+             .vecTxtQ(args$argumentRedundancy$argNames2),
+             ". However, these are mutually exclusive; specify *either* ",
+             .vecTxtQ(args$argumentRedundancy$argNames1),
+             " *or* ",
+             .vecTxtQ(args$argumentRedundancy$argNames2),
+             ", but not all together!")
   }
   
   ### If `wrongType` is provided, an argument has the wrong type.
@@ -93,7 +110,7 @@
   
   return(paste0(errorMsg,
                 " You can get more details by typing:\n\n  ?",
-                pkgname,
+                .PACKAGENAME,
                 "::",
                 args$callingFunction))
 
@@ -106,6 +123,27 @@
     return(paste0(.vecTxtQ(x)))
   }
 }
+
+.functionalityNotImplementedMsg <- function(...) {
+
+  args <- list(...)
+  
+  if (args$reason == "nonexistent") {
+    errorMsg <-
+      paste0("I am sorry, but obtaining ",
+             args$conversion,
+             " is not yet possible - there exists no ",
+             " methodologically and statistically correct ",
+             " procedure for this conversion.")
+  }
+  
+  return(paste0(errorMsg,
+                " You can get more details by typing:\n\n  ?",
+                .PACKAGENAME,
+                "::",
+                args$callingFunction))
+}
+
 
 .vecTxt <- function(vector, delimiter = ", ", useQuote = "",
                    firstDelimiter = NULL, lastDelimiter = " & ",
