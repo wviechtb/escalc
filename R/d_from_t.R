@@ -30,7 +30,7 @@
 #' facilitate cumulative science: a practical primer for t-tests and ANOVAs.
 #' *Frontiers in Psychology, 4*, p. 863. \doi{10.3389/fpsyg.2013.00863}
 #' 
-#' @examples escalc::t_to_d(t = 2.85, df = 128);
+#' @examples escalc::d_from_t(t = 2.85, df = 128);
 #'
 #' @export
 d_from_t <- function(t, df, n1, n2, proportion=.5) {

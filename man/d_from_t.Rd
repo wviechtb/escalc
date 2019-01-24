@@ -30,7 +30,7 @@ The formula that is used is the following (see e.g. Lakens, 2013):
 \deqn{d= t \sqrt{(\frac{1}{n_1} + \frac{1}{n_2})}}{d=t*sqrt(1/n1 + 1/n2))}
 }
 \examples{
-escalc::t_to_d(t = 2.85, df = 128);
+escalc::d_from_t(t = 2.85, df = 128);
 
 }
 \references{
