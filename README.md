@@ -5,6 +5,8 @@ escalc
 
 The goal of escalc is to provide a home for various functions to convert effect sizes.
 
+[![Travis build status](https://travis-ci.org/wviechtb/transformer.svg?branch=master)](https://travis-ci.org/wviechtb/transformer)
+
 Code of conduct
 ---------------
 

@@ -133,10 +133,18 @@
       paste0("I am sorry, but obtaining ",
              args$conversion,
              " is not yet possible - there exists no ",
-             " methodologically and statistically correct ",
-             " procedure for this conversion.")
+             "methodologically and statistically correct ",
+             "procedure for this conversion.")
   }
   
+  if (args$reason == "notyet") {
+    errorMsg <-
+      paste0("I am sorry, but obtaining ",
+             args$conversion,
+             " is not yet possible - this functionality  ",
+             " has not yet been implemented.")
+  }
+
   return(paste0(errorMsg,
                 " You can get more details by typing:\n\n  ?",
                 .PACKAGENAME,

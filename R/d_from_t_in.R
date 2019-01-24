@@ -16,13 +16,26 @@
 #' 
 #' \deqn{d= t \sqrt{(\frac{1}{n_1} + \frac{1}{n_2})}}{d=t*sqrt(1/n1 + 1/n2))}
 #' 
-#' @param t The *t* value.
-#' @param df The degrees of freedom of `t`; either provide this `proportion`,
-#' or `n1` and `n1`.
-#' @param n1,n2 The sample sizes of the two groups formed by the dichotomous
-#' variable.
-#' @param proportion The proportion of participants in the first (or second)
-#' group; must be specified if `df` is specified.
+#' @param t A numerical vector with one or more *t* values.
+#' @param df,n A numerical vector with the degrees of freedom (`df`) of `t` or
+#' the total sample size (`n`), which is \eqn{df + 2}. Either provide exactly
+#' one of `df` or `n`, and corresponding `proportion`s; *or* provide `n1`
+#' and `n1`. Note that the *n*th element of the `df` and `n` vectors must
+#' correspond to the *n*th element of the `t` vector.
+#' @param n1,n2 A numerical vector with the sample sizes of the two groups
+#' formed by the dichotomous variable. Note that the *n*th element of these
+#' vectors must correspond to the *n*th element of the `t` vector.
+#' @param proportion A numerical vector with the proportion of participants
+#' in the first (or therefore, implicitly, second) group; must be specified
+#' if `df` of `n` is specified.  Note that the *n*th element of this vector
+#' must correspond to the *n*th element of the `t` vector.
+#' @param assumeHomoscedacity Whether Student's t is used (assuming equal
+#' variances, or homoscedacity), or Welch's t (assuming unequal variances,
+#' or heteroscedacity). Note that if the variance in the two groups is not
+#' equal, as yet, no method exists for this conversion.
+#' @param biasCorrected Whether to ------ Wolfgang, Simon, just to check--- 
+#' are we talking whether to _deliver_ d or Hedges' g ---- or does some
+#' bias correction of *t* exist that I just never heard of?
 #' 
 #' @return A numeric vector of Cohen's `d` values.
 #' 
@@ -30,7 +43,10 @@
 #' facilitate cumulative science: a practical primer for t-tests and ANOVAs.
 #' *Frontiers in Psychology, 4*, p. 863. \doi{10.3389/fpsyg.2013.00863}
 #' 
-#' @examples escalc::d_from_t_in(t = 2.85, df = 128);
+#' @examples
+#' escalc::d_from_t_in(t = 2.828427,
+#'                    df = 126,
+#'                    proportion=.5);
 #'
 #' @export
 d_from_t_in <- function(t,
@@ -42,6 +58,14 @@ d_from_t_in <- function(t,
                         assumeHomoscedacity = TRUE,
                         biasCorrected = FALSE) {
 
+  ###--------------------------------------------------------------------------
+  ###--------------------------------------------------------------------------
+  ###
+  ### Argument checking
+  ###
+  ###--------------------------------------------------------------------------
+  ###--------------------------------------------------------------------------
+  
   ###------------------------------------------------------------------------ t
   ### Argument-checking - Check presence
   ###------------------------------------------------------------------------ t
@@ -182,14 +206,33 @@ d_from_t_in <- function(t,
     n2 <- (1 - proportion) * (df + 2);
   }
 
+  ###----------------------------------------------------------- n & proportion
+  ### Argument preprocessing
+  ###----------------------------------------------------------- n & proportion
+  
+  if (!missing(n)) {
+    n1 <-      proportion  * n;
+    n2 <- (1 - proportion) * n;
+  }
+  
+  ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   ###
   ###  Actual functionality
   ###
+  ###  At this point, we *must* have (with valid values):
+  ###
+  ###   - t
+  ###   - n1
+  ###   - n2
+  ###   ~ assumeHomoscedacity (has a default value)
+  ###   ~ biasCorrected (has a default value)
+  ###
+  ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   
   if (!assumeHomoscedacity) {
-    stop(.functionalityNotImplementedMsg(conversion = "d from Welch's t",
+    stop(.functionalityNotImplementedMsg(conversion = "d from an independent t-test with Welch's t",
                                          reason = "nonexistent",
                                          callingFunction = .curfnfinder()))
   }
@@ -198,29 +241,42 @@ d_from_t_in <- function(t,
   ### Effect size point estimate
   ###--------------------------------------------------------------------------
 
-  ### Updated to reflect http://journal.frontiersin.org/article/10.3389/fpsyg.2013.00863/full
-  #   multiplier <- sqrt(((groupSize1 + groupSize2) / (groupSize1 * groupSize2)) *
-  #                        ((groupSize1 + groupSize2) / (groupSize1 + groupSize2 - 2)))
-  
-  multiplier <- sqrt((1 / n1) + (1 / n2))
-  
-  d <- t * multiplier
+  if (biasCorrected) {
+    stop(.functionalityNotImplementedMsg(conversion = "d from a bias corrected independent t-test Student t",
+                                         reason = "notyet",
+                                         callingFunction = .curfnfinder()))
+  } else {
+    ### Updated to reflect http://journal.frontiersin.org/article/10.3389/fpsyg.2013.00863/full
+    #   multiplier <- sqrt(((groupSize1 + groupSize2) / (groupSize1 * groupSize2)) *
+    #                        ((groupSize1 + groupSize2) / (groupSize1 + groupSize2 - 2)))
+    
+    multiplier <- sqrt((1 / n1) + (1 / n2))
+    
+    d <- t * multiplier
+  }
 
   ###--------------------------------------------------------------------------
   ### Effect size variance
   ###--------------------------------------------------------------------------
   
-  # https://stats.stackexchange.com/questions/144084/variance-of-cohens-d-statistic
+  if (biasCorrected) {
+    stop(.functionalityNotImplementedMsg(conversion = "d from a bias corrected independent t-test Student t",
+                                         reason = "notyet",
+                                         callingFunction = .curfnfinder()))
+  } else {
+    # https://stats.stackexchange.com/questions/144084/variance-of-cohens-d-statistic
+    dVar <- ((n1 + n2) / (n1 * n2)) + ((d^2) / (2*(n1+n2)))
+  }
   
-  dVar <- ((n1 + n2) / (n1 * n2)) + ((d^2) / (2*(n1+n2)))
-  
+  ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   ###
   ###  Prepare dataframe and return result
   ###
   ###--------------------------------------------------------------------------
+  ###--------------------------------------------------------------------------
   
   return(setNames(data.frame(d, dVar),
                   c(.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF,
-                    .EFFECTSIZE_VARIANCE_NAME_IN_DF)));
+                    .EFFECTSIZE_VARIANCE_NAME_IN_DF)))
 }
