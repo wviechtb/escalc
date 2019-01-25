@@ -18,6 +18,7 @@ The goal of escalc is to provide a home for various functions to convert effect 
 
 [![Travis build status](https://travis-ci.org/wviechtb/escalc.svg?branch=master)](https://travis-ci.org/wviechtb/escalc)
 
+[![Coverage status](https://codecov.io/gh/wviechtb/escalc/branch/master/graph/badge.svg)](https://codecov.io/github/wviechtb/escalc?branch=master)
 
 ## Code of conduct
 
