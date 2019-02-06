@@ -276,7 +276,7 @@ d_from_t_in <- function(t,
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   
-  return(setNames(data.frame(d, dVar),
-                  c(.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF,
-                    .EFFECTSIZE_VARIANCE_NAME_IN_DF)))
+  return(stats::setNames(data.frame(d, dVar),
+                         c(.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF,
+                           .EFFECTSIZE_VARIANCE_NAME_IN_DF)))
 }
