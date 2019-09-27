@@ -45,8 +45,8 @@
 #' 
 #' @examples
 #' escalc::d_from_t_in(t = 2.828427,
-#'                    df = 126,
-#'                    proportion=.5);
+#'                     df = 126,
+#'                     proportion=.5);
 #'
 #' @export
 d_from_t_in <- function(t,
