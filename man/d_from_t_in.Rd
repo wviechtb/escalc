@@ -46,8 +46,8 @@ The formula that is used is the following (see e.g. Lakens, 2013):
 }
 \examples{
 escalc::d_from_t_in(t = 2.828427,
-                    df = 126,
-                    proportion=.5);
+                    n1 = 126,
+                    n2 = 89);
 
 }
 \references{

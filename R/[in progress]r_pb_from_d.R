@@ -7,7 +7,7 @@ r_pb_from_d <- function(d, n1, n2) {
   m = n - 2
   h <- m/n1 + m/n2
   r_PB <- d / sqrt(d^2 + h)
-  reverse to get:
+  #reverse to get:
     d = f(r_PB)
 
 
