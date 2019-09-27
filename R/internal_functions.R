@@ -141,7 +141,7 @@
     errorMsg <-
       paste0("I am sorry, but obtaining ",
              args$conversion,
-             " is not yet possible - this functionality  ",
+             " is not yet possible - this functionality",
              " has not yet been implemented.")
   }
 

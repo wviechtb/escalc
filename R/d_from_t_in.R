@@ -33,9 +33,8 @@
 #' variances, or homoscedacity), or Welch's t (assuming unequal variances,
 #' or heteroscedacity). Note that if the variance in the two groups is not
 #' equal, as yet, no method exists for this conversion.
-#' @param biasCorrected Whether to ------ Wolfgang, Simon, just to check--- 
-#' are we talking whether to _deliver_ d or Hedges' g ---- or does some
-#' bias correction of *t* exist that I just never heard of?
+#' @param biasCorrect Logical to indicate if the *d*-values should be
+#' bias-corrected. Can also be a vector.
 #' 
 #' @return A data frame with in the first column, Cohen's `d` values, and
 #' in the second column, the corresponding variances.
@@ -51,13 +50,10 @@
 #'
 #' @export
 d_from_t_in <- function(t,
-                        df,
-                        n,
-                        proportion,
                         n1,
                         n2,
                         assumeHomoscedacity = TRUE,
-                        biasCorrected = FALSE) {
+                        biasCorrect = FALSE) {
 
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -227,7 +223,7 @@ d_from_t_in <- function(t,
   ###   - n1
   ###   - n2
   ###   ~ assumeHomoscedacity (has a default value)
-  ###   ~ biasCorrected (has a default value)
+  ###   ~ biasCorrect (has a default value)
   ###
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -242,33 +238,23 @@ d_from_t_in <- function(t,
   ### Effect size point estimate
   ###--------------------------------------------------------------------------
 
-  if (biasCorrected) {
-    stop(.functionalityNotImplementedMsg(conversion = "d from a bias corrected independent t-test Student t",
-                                         reason = "notyet",
-                                         callingFunction = .curfnfinder()))
-  } else {
-    ### Updated to reflect http://journal.frontiersin.org/article/10.3389/fpsyg.2013.00863/full
-    #   multiplier <- sqrt(((groupSize1 + groupSize2) / (groupSize1 * groupSize2)) *
-    #                        ((groupSize1 + groupSize2) / (groupSize1 + groupSize2 - 2)))
-    
-    multiplier <- sqrt((1 / n1) + (1 / n2))
-    
-    d <- t * multiplier
-  }
+  ### Updated to reflect http://journal.frontiersin.org/article/10.3389/fpsyg.2013.00863/full
+  #   multiplier <- sqrt(((groupSize1 + groupSize2) / (groupSize1 * groupSize2)) *
+  #                        ((groupSize1 + groupSize2) / (groupSize1 + groupSize2 - 2)))
+  
+  multiplier <- sqrt((1 / n1) + (1 / n2))
+  
+  d <- t * multiplier
+  
+  d <- ifelse(biasCorrect, .cmicalc(m), 1) * d
 
   ###--------------------------------------------------------------------------
   ### Effect size variance
   ###--------------------------------------------------------------------------
   
-  if (biasCorrected) {
-    stop(.functionalityNotImplementedMsg(conversion = "d from a bias corrected independent t-test Student t",
-                                         reason = "notyet",
-                                         callingFunction = .curfnfinder()))
-  } else {
-    # https://stats.stackexchange.com/questions/144084/variance-of-cohens-d-statistic
-    dVar <- ((n1 + n2) / (n1 * n2)) + ((d^2) / (2*(n1+n2)))
-  }
-  
+  # https://stats.stackexchange.com/questions/144084/variance-of-cohens-d-statistic
+  dVar <- ((n1 + n2) / (n1 * n2)) + ((d^2) / (2*(n1+n2)))
+
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   ###

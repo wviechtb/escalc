@@ -2,5 +2,5 @@
 
 export()
 export(d_from_p_t_in)
-export(d_from_r_pbs)
+export(d_from_r_pb)
 export(d_from_t_in)

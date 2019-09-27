@@ -4,11 +4,22 @@
 \alias{d_from_t_in}
 \title{Obtain Cohen's \emph{d} from Student's \emph{t}}
 \usage{
-d_from_t_in(t, df, n, proportion, n1, n2, assumeHomoscedacity = TRUE,
-  biasCorrected = FALSE)
+d_from_t_in(t, n1, n2, assumeHomoscedacity = TRUE, biasCorrect = FALSE)
 }
 \arguments{
 \item{t}{A numerical vector with one or more \emph{t} values.}
+
+\item{n1, n2}{A numerical vector with the sample sizes of the two groups
+formed by the dichotomous variable. Note that the \emph{n}th element of these
+vectors must correspond to the \emph{n}th element of the \code{t} vector.}
+
+\item{assumeHomoscedacity}{Whether Student's t is used (assuming equal
+variances, or homoscedacity), or Welch's t (assuming unequal variances,
+or heteroscedacity). Note that if the variance in the two groups is not
+equal, as yet, no method exists for this conversion.}
+
+\item{biasCorrect}{Logical to indicate if the \emph{d}-values should be
+bias-corrected. Can also be a vector.}
 
 \item{df, n}{A numerical vector with the degrees of freedom (\code{df}) of \code{t} or
 the total sample size (\code{n}), which is \eqn{df + 2}. Either provide exactly
@@ -20,19 +31,6 @@ correspond to the \emph{n}th element of the \code{t} vector.}
 in the first (or therefore, implicitly, second) group; must be specified
 if \code{df} or \code{n} is specified.  Note that the \emph{n}th element of this vector
 must correspond to the \emph{n}th element of the \code{t} vector.}
-
-\item{n1, n2}{A numerical vector with the sample sizes of the two groups
-formed by the dichotomous variable. Note that the \emph{n}th element of these
-vectors must correspond to the \emph{n}th element of the \code{t} vector.}
-
-\item{assumeHomoscedacity}{Whether Student's t is used (assuming equal
-variances, or homoscedacity), or Welch's t (assuming unequal variances,
-or heteroscedacity). Note that if the variance in the two groups is not
-equal, as yet, no method exists for this conversion.}
-
-\item{biasCorrected}{Whether to ------ Wolfgang, Simon, just to check---
-are we talking whether to \emph{deliver} d or Hedges' g ---- or does some
-bias correction of \emph{t} exist that I just never heard of?}
 }
 \value{
 A data frame with in the first column, Cohen's \code{d} values, and
