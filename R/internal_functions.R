@@ -205,36 +205,9 @@
   return(.vecTxt(vector, useQuote = useQuote, ...));
 }
 
-### Written by Nick Sabbe, http://stackoverflow.com/questions/7307987/logging-current-function-name
-.curfnfinder <- function(skipframes=0,
-                         skipnames="(FUN)|(.+apply)|(replicate)",
-                         retIfNone="Not in function",
-                         retStack=FALSE,
-                         extraPrefPerLevel="\t") {
-  prefix <- sapply(3 + skipframes+1:sys.nframe(), function(i) {
-    currv<-sys.call(sys.parent(n=i))[[1]]
-    return(currv)
-  });
-  prefix[grep(skipnames, prefix)] <- NULL;
-  prefix <- gsub("function \\(.*", "do.call", prefix);
-  if(length(prefix)==0) {
-    return(retIfNone);
-  } else if(retStack) {
-    return(paste(rev(prefix), collapse = "|"));
-  } else {
-    res <- as.character(unlist(prefix[1]));
-    res <- unlist(lapply(res, gsub, pattern=".*::", replacement=""));
-    if (length(prefix) > 1) {
-      res <- paste(paste(rep(extraPrefPerLevel, length(prefix) - 1), collapse=""), res, sep="");
-    }
-    return(res);
-  }
-}
-
-### the function above is way too complicated for our use case; all we need is this:
+### Note: it skips back three frame numbers, so this assumes that it is being
+### called like this: stop(.somefunction(..., callingFunction = .curfnfinder()))
 .curfnfinder <- function() as.character(sys.call(-3)[1])
 
-# note: it skips back three frame numbers, so this assumes that it is being
-# called like this: stop(.somefunction(..., callingFunction = .curfnfinder()))
 
 .cmicalc <- function(mi) ifelse(mi <= 1, NA, exp(lgamma(mi/2) - log(sqrt(mi/2)) - lgamma((mi-1)/2)))
