@@ -8,7 +8,7 @@
 .errmsg <- function(...) {
 
   args <- list(...)
-  
+
   ### If `missing` is provided, a required argument is missing.
   if ('missing' %in% names(args)) {
     errorMsg <-
@@ -26,7 +26,7 @@
              .vecTxt(args$differentLengths$argLengths),
              ".")
   }
-  
+
   ### If `conditionalMissing` is provided, one or more required arguments
   ### were provided, but one or more additional arguments that is/are required
   ### because of those arguments that were provided, is or are missing.
@@ -55,7 +55,7 @@
              .vecTxtQ(args$argumentRedundancy$argNames2),
              ", but not all together!")
   }
-  
+
   ### If `wrongType` is provided, an argument has the wrong type.
   if ('wrongType' %in% names(args)) {
     errorMsg <-
@@ -68,7 +68,7 @@
              "' is required.")
   }
 
-  ### If `cantBeNullOrNA` is provided, an argument is NULL or NA but shouldn't be  
+  ### If `cantBeNullOrNA` is provided, an argument is NULL or NA but shouldn't be
   if ('cantBeNullOrNA' %in% names(args)) {
     errorMsg <-
       paste0("For argument '",
@@ -107,7 +107,7 @@
              args$invalidValueCombo$validValues,
              ".")
   }
-  
+
   return(paste0(errorMsg,
                 " You can get more details by typing:\n\n  ?",
                 .PACKAGENAME,
@@ -127,7 +127,7 @@
 .functionalityNotImplementedMsg <- function(...) {
 
   args <- list(...)
-  
+
   if (args$reason == "nonexistent") {
     errorMsg <-
       paste0("I am sorry, but obtaining ",
@@ -136,7 +136,7 @@
              "methodologically and statistically correct ",
              "procedure for this conversion.")
   }
-  
+
   if (args$reason == "notyet") {
     errorMsg <-
       paste0("I am sorry, but obtaining ",
@@ -157,13 +157,13 @@
                    firstDelimiter = NULL, lastDelimiter = " & ",
                    firstElements = 0, lastElements = 1,
                    lastHasPrecedence = TRUE) {
-  
+
   vector <- paste0(useQuote, vector, useQuote);
-  
+
   if (length(vector) == 1) {
     return(vector);
   }
-  
+
   if (firstElements + lastElements > length(vector)) {
     if (lastHasPrecedence) {
       firstElements <- length(vector) - lastElements;
@@ -171,16 +171,16 @@
       lastElements <- length(vector) - firstElements;
     }
   }
-  
+
   firstTxt <- lastTxt <- "";
-  
+
   if (is.null(firstDelimiter)) {
     firstDelimiter <- delimiter;
   }
   if (is.null(lastDelimiter)) {
     lastDelimiter <- delimiter;
   }
-  
+
   midBit <- vector;
   if (firstElements > 0) {
     firstBit <- utils::head(vector, firstElements);
@@ -194,11 +194,11 @@
     lastTxt <- paste0(lastDelimiter, paste0(lastBit,
                                             collapse=lastDelimiter));
   }
-  
+
   midTxt <- paste0(midBit, collapse=delimiter);
-  
+
   return(paste0(firstTxt, midTxt, lastTxt));
-  
+
 }
 
 .vecTxtQ <- function(vector, useQuote = "'", ...) {
@@ -230,3 +230,11 @@
     return(res);
   }
 }
+
+### the function above is way too complicated for our use case; all we need is this:
+.curfnfinder <- function() as.character(sys.call(-3)[1])
+
+# note: it skips back three frame numbers, so this assumes that it is being
+# called like this: stop(.somefunction(..., callingFunction = .curfnfinder()))
+
+.cmicalc <- function(mi) ifelse(mi <= 1, NA, exp(lgamma(mi/2) - log(sqrt(mi/2)) - lgamma((mi-1)/2)))
