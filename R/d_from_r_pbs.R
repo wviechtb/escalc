@@ -1,63 +1,55 @@
-#' Obtain Cohen's *d* from Student's *t*
+#' Obtain Cohen's *d* from the point biserial correlation *r*
 #' 
-#' This function converts Student's *t* to Cohen's *d*.
+#' This function converts the point biserial correlation *r* to Cohen's *d*.
 #' 
-#' The formula that is used is the following (see e.g. Lakens, 2013):
+#' The formula that is used is the following (see e.g. Borenstein et al., 2009):
 #' 
-### Wolfgang & Simon:
-### So, LaTeX math can just be used, like in regular manual files, see:
-###
-### https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Mathematics
-###
-### So: use \eqn or \dqn depending on whether you want inline or 'display';
-### and specify two arguments, where the first is LaTeX for processing into
-### PDF for the manual, and the second one ASCII for contexts that don't
-### support e.g. MathJax:
+#' \deqn{d= \frac{2 r_{pbs}}{\sqrt{1 - r^2}} }
 #' 
-#' \deqn{d= t \sqrt{(\frac{1}{n_1} + \frac{1}{n_2})}}{d=t*sqrt(1/n1 + 1/n2))}
-#' 
-#' @param t A numerical vector with one or more *t* values.
-#' @param df,n A numerical vector with the degrees of freedom (`df`) of `t` or
+#' @param r_pbs A numerical vector with one or more point biserial *r* values.
+#' @param df,n A numerical vector with the degrees of freedom (`df`) of `r_pbs` or
 #' the total sample size (`n`), which is \eqn{df + 2}. Either provide exactly
 #' one of `df` or `n`, and corresponding `proportion`s; *or* provide `n1`
 #' and `n1`. Note that the *n*th element of the `df` and `n` vectors must
-#' correspond to the *n*th element of the `t` vector.
+#' correspond to the *n*th element of the `r_pbs` vector.
 #' @param n1,n2 A numerical vector with the sample sizes of the two groups
 #' formed by the dichotomous variable. Note that the *n*th element of these
-#' vectors must correspond to the *n*th element of the `t` vector.
+#' vectors must correspond to the *n*th element of the `r_pbs` vector.
 #' @param proportion A numerical vector with the proportion of participants
 #' in the first (or therefore, implicitly, second) group; must be specified
 #' if `df` or `n` is specified.  Note that the *n*th element of this vector
-#' must correspond to the *n*th element of the `t` vector.
-#' @param assumeHomoscedacity Whether Student's t is used (assuming equal
-#' variances, or homoscedacity), or Welch's t (assuming unequal variances,
-#' or heteroscedacity). Note that if the variance in the two groups is not
-#' equal, as yet, no method exists for this conversion.
+#' must correspond to the *n*th element of the `r_pbs` vector.
+#' @param baseRateSensitive Whether to compute 
 #' @param biasCorrected Whether to ------ Wolfgang, Simon, just to check--- 
-#' are we talking whether to _deliver_ d or Hedges' g ---- or does some
-#' bias correction of *t* exist that I just never heard of?
+#' are we talking whether to _deliver_ d or Hedges' g?
 #' 
 #' @return A data frame with in the first column, Cohen's `d` values, and
 #' in the second column, the corresponding variances.
 #' 
-#' @references Lakens, D. (2013) Calculating and reporting effect sizes to
-#' facilitate cumulative science: a practical primer for t-tests and ANOVAs.
-#' *Frontiers in Psychology, 4*, p. 863. \doi{10.3389/fpsyg.2013.00863}
+#' @references Borenstein, M., Hedges, L. V., Higgins, J. P. T., &
+#' Rothstein, H. R. (2009) *Introduction to Meta-Analysis*, Chichester,
+#' UK: John Wiley & Sons, Ltd.
+#' 
+#' Also see:
+#' 
+#' McGrath, R. E. & Meyer, G. J. (2006) When Effect Sizes Disagree:
+#' The Case of *r* and *d*. *Psychological Methods, 11*, 386-401,
+#' doi:\doi{10.1037/1082-989X.11.4.386386}
 #' 
 #' @examples
-#' escalc::d_from_t_in(t = 2.828427,
-#'                     df = 126,
-#'                     proportion=.5);
+#' escalc::d_from_r_pbs(r_pbs = .3,
+#'                      n = 100,
+#'                      proportion=.5);
 #'
 #' @export
-d_from_t_in <- function(t,
-                        df,
-                        n,
-                        proportion,
-                        n1,
-                        n2,
-                        assumeHomoscedacity = TRUE,
-                        biasCorrected = FALSE) {
+d_from_r_pbs <- function(r_pbs,
+                         df = NULL,
+                         n = NULL,
+                         proportion = NULL,
+                         n1 = NULL,
+                         n2 = NULL,
+                         baseRateSensitive = FALSE,
+                         biasCorrected = FALSE) {
 
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -67,11 +59,11 @@ d_from_t_in <- function(t,
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   
-  ###------------------------------------------------------------------------ t
+  ###-------------------------------------------------------------------- r_pbs
   ### Argument-checking - Check presence
-  ###------------------------------------------------------------------------ t
-  if (missing(t)) {
-    stop(.errmsg(missing='t',
+  ###-------------------------------------------------------------------- r_pbs
+  if (missing(r_pbs)) {
+    stop(.errmsg(missing='r_pbs',
                  callingFunction = .curfnfinder()))
   }
   
@@ -106,16 +98,16 @@ d_from_t_in <- function(t,
   }
   
   
-  ###------------------------------------------------------------------------ t
+  ###-------------------------------------------------------------------- r_pbs
   ### Argument-checking - Check NA, NULL, and class
-  ###------------------------------------------------------------------------ t
-  if (is.null(t) || is.na(t)) {
-    stop(.errmsg(cantBeNullOrNA=list(argName='t',
-                                     argVal = t),
+  ###-------------------------------------------------------------------- r_pbs
+  if (is.null(r_pbs) || is.na(r_pbs)) {
+    stop(.errmsg(cantBeNullOrNA=list(argName='r_pbs',
+                                     argVal = r_pbs),
                  callingFunction = .curfnfinder()))
-  } else if (!is.numeric(t)) {
-    stop(.errmsg(wrongType=list(argName='t',
-                                providedType=class(t),
+  } else if (!is.numeric(r_pbs)) {
+    stop(.errmsg(wrongType=list(argName='r_pbs',
+                                providedType=class(r_pbs),
                                 requiredType='numeric'),
                  callingFunction = .curfnfinder()))
   }
@@ -126,14 +118,14 @@ d_from_t_in <- function(t,
   if (!missing(df) || !missing(n)) {
     ### Check whether `proportion` was provided
     if (missing(proportion) || is.null(proportion) || is.na(proportion)) {
-      stop(.errmsg(conditionalMissing=list(provided='df',
+      stop(.errmsg(conditionalMissing=list(provided='df or n',
                                            missing='proportion'),
                    callingFunction = .curfnfinder()))
     }
   } else {
     ### df and n are missing
     if (missing(n1) || missing(n2)) {
-      stop(.errmsg(conditionalMissing=list(provided=c('t'),
+      stop(.errmsg(conditionalMissing=list(provided=c('r_pbs'),
                                            missing=list('df',
                                                         'n',
                                                         c('n1', 'n2'))),
@@ -170,29 +162,29 @@ d_from_t_in <- function(t,
     }
   }
 
-  ###--------------------------------------------------------------- t, n1 & n2
+  ###----------------------------------------------------------- r_pbs, n1 & n2
   ### Argument checking: lengths
-  ###--------------------------------------------------------------- t, n1 & n2
+  ###----------------------------------------------------------- r_pbs, n1 & n2
   
   if (!missing(n1) && !missing(n2)) {
     argLengths <- c(length(t), length(n2), length(n2));
     if (length(unique(argLengths)) > 1) {
       stop(.errmsg(differentLengths =
-                     list(argNames=c("t", "n1", "n2"),
+                     list(argNames=c("r_pbs", "n1", "n2"),
                           argLengths=argLengths),
                    callingFunction = .curfnfinder()))
     }
   }
     
-  ###------------------------------------------------------- t, df & proportion
+  ###--------------------------------------------------- r_pbs, df & proportion
   ### Argument checking: lengths
-  ###------------------------------------------------------- t, df & proportion
+  ###--------------------------------------------------- r_pbs, df & proportion
   
   if (!missing(df)) {
     argLengths <- c(length(t), length(df), length(proportion));
     if (length(unique(argLengths)) > 1) {
       stop(.errmsg(differentLengths =
-                     list(argNames=c("t", "df", "proportion"),
+                     list(argNames=c("r_pbs", "df", "proportion"),
                           argLengths=argLengths),
                    callingFunction = .curfnfinder()))
     }
@@ -223,18 +215,20 @@ d_from_t_in <- function(t,
   ###
   ###  At this point, we *must* have (with valid values):
   ###
-  ###   - t
+  ###   - r_pbs
   ###   - n1
   ###   - n2
-  ###   ~ assumeHomoscedacity (has a default value)
+  ###   ~ baseRateSensitive (has a default value)
   ###   ~ biasCorrected (has a default value)
   ###
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   
-  if (!assumeHomoscedacity) {
-    stop(.functionalityNotImplementedMsg(conversion = "d from an independent t-test with Welch's t",
-                                         reason = "nonexistent",
+  if (baseRateSensitive) {
+    stop(.functionalityNotImplementedMsg(conversion = paste0("converting d from a
+                                                             point biserial correlation
+                                                             in a base rate sensitive way"),
+                                         reason = "notyet",
                                          callingFunction = .curfnfinder()))
   }
 
@@ -243,17 +237,13 @@ d_from_t_in <- function(t,
   ###--------------------------------------------------------------------------
 
   if (biasCorrected) {
-    stop(.functionalityNotImplementedMsg(conversion = "d from a bias corrected independent t-test Student t",
+    stop(.functionalityNotImplementedMsg(conversion = "d from a bias corrected point biserial r",
                                          reason = "notyet",
                                          callingFunction = .curfnfinder()))
   } else {
-    ### Updated to reflect http://journal.frontiersin.org/article/10.3389/fpsyg.2013.00863/full
-    #   multiplier <- sqrt(((groupSize1 + groupSize2) / (groupSize1 * groupSize2)) *
-    #                        ((groupSize1 + groupSize2) / (groupSize1 + groupSize2 - 2)))
     
-    multiplier <- sqrt((1 / n1) + (1 / n2))
+    d = (2 * r_pbs) / sqrt( 1 - r_pbs^2)
     
-    d <- t * multiplier
   }
 
   ###--------------------------------------------------------------------------
@@ -261,7 +251,7 @@ d_from_t_in <- function(t,
   ###--------------------------------------------------------------------------
   
   if (biasCorrected) {
-    stop(.functionalityNotImplementedMsg(conversion = "d from a bias corrected independent t-test Student t",
+    stop(.functionalityNotImplementedMsg(conversion = "d from a bias corrected point biserial r",
                                          reason = "notyet",
                                          callingFunction = .curfnfinder()))
   } else {

@@ -18,7 +18,7 @@ correspond to the \emph{n}th element of the \code{t} vector.}
 
 \item{proportion}{A numerical vector with the proportion of participants
 in the first (or therefore, implicitly, second) group; must be specified
-if \code{df} of \code{n} is specified.  Note that the \emph{n}th element of this vector
+if \code{df} or \code{n} is specified.  Note that the \emph{n}th element of this vector
 must correspond to the \emph{n}th element of the \code{t} vector.}
 
 \item{n1, n2}{A numerical vector with the sample sizes of the two groups
@@ -35,7 +35,8 @@ are we talking whether to \emph{deliver} d or Hedges' g ---- or does some
 bias correction of \emph{t} exist that I just never heard of?}
 }
 \value{
-A numeric vector of Cohen's \code{d} values.
+A data frame with in the first column, Cohen's \code{d} values, and
+in the second column, the corresponding variances.
 }
 \description{
 This function converts Student's \emph{t} to Cohen's \emph{d}.
@@ -47,8 +48,8 @@ The formula that is used is the following (see e.g. Lakens, 2013):
 }
 \examples{
 escalc::d_from_t_in(t = 2.828427,
-                   df = 126,
-                   proportion=.5);
+                    df = 126,
+                    proportion=.5);
 
 }
 \references{
