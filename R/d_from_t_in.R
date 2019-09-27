@@ -37,7 +37,8 @@
 #' are we talking whether to _deliver_ d or Hedges' g ---- or does some
 #' bias correction of *t* exist that I just never heard of?
 #' 
-#' @return A numeric vector of Cohen's `d` values.
+#' @return A data frame with in the first column, Cohen's `d` values, and
+#' in the second column, the corresponding variances.
 #' 
 #' @references Lakens, D. (2013) Calculating and reporting effect sizes to
 #' facilitate cumulative science: a practical primer for t-tests and ANOVAs.
