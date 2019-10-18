@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Obtain Cohen's <em>d</em> from Student's <em>t</em> — d_from_t_in • escalc</title>
+<title>Obtain Cohen's <em>d</em> from the point biserial correlation <em>r</em> — d_from_r_pb • escalc</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Obtain Cohen's <em>d</em> from Student's <em>t</em> — d_from_t_in" />
-<meta property="og:description" content="This function converts Student's t to Cohen's d." />
+<meta property="og:title" content="Obtain Cohen's <em>d</em> from the point biserial correlation <em>r</em> — d_from_r_pb" />
+<meta property="og:description" content="This function converts the point biserial correlation r to Cohen's d." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,56 +100,40 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Obtain Cohen's <em>d</em> from Student's <em>t</em></h1>
+    <h1>Obtain Cohen's <em>d</em> from the point biserial correlation <em>r</em></h1>
     
-    <div class="hidden name"><code>d_from_t_in.Rd</code></div>
+    <div class="hidden name"><code>d_from_r_pb.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function converts Student's <em>t</em> to Cohen's <em>d</em>.</p>
+    <p>This function converts the point biserial correlation <em>r</em> to Cohen's <em>d</em>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>d_from_t_in</span>(<span class='no'>t</span>, <span class='no'>n1</span>, <span class='no'>n2</span>, <span class='kw'>assumeHomoscedacity</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>biasCorrect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>d_from_r_pb</span>(<span class='no'>r_pb</span>, <span class='no'>n1</span>, <span class='no'>n2</span>, <span class='kw'>baseRateSensitive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>biasCorrect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>crosssectionalSampling</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>t</th>
-      <td><p>A numerical vector with one or more <em>t</em> values.</p></td>
+      <th>r_pb</th>
+      <td><p>A numerical vector with one or more point biserial <em>r</em> values.</p></td>
     </tr>
     <tr>
       <th>n1, n2</th>
       <td><p>A numerical vector with the sample sizes of the two groups
 formed by the dichotomous variable. Note that the <em>n</em>th element of these
-vectors must correspond to the <em>n</em>th element of the <code>t</code> vector.</p></td>
+vectors must correspond to the <em>n</em>th element of the <code>r_pbs</code> vector.</p></td>
     </tr>
     <tr>
-      <th>assumeHomoscedacity</th>
-      <td><p>Whether Student's t is used (assuming equal
-variances, or homoscedacity), or Welch's t (assuming unequal variances,
-or heteroscedacity). Note that if the variance in the two groups is not
-equal, as yet, no method exists for this conversion.</p></td>
+      <th>baseRateSensitive</th>
+      <td><p>Whether to compute tyhe base rate sensitive
+Cohen's d or not (see McGrath &amp; Meyer, 2006).</p></td>
     </tr>
     <tr>
       <th>biasCorrect</th>
       <td><p>Logical to indicate if the <em>d</em>-values should be
 bias-corrected. Can also be a vector.</p></td>
-    </tr>
-    <tr>
-      <th>df, n</th>
-      <td><p>A numerical vector with the degrees of freedom (<code>df</code>) of <code>t</code> or
-the total sample size (<code>n</code>), which is \(df + 2\). Either provide exactly
-one of <code>df</code> or <code>n</code>, and corresponding <code>proportion</code>s; <em>or</em> provide <code>n1</code>
-and <code>n1</code>. Note that the <em>n</em>th element of the <code>df</code> and <code>n</code> vectors must
-correspond to the <em>n</em>th element of the <code>t</code> vector.</p></td>
-    </tr>
-    <tr>
-      <th>proportion</th>
-      <td><p>A numerical vector with the proportion of participants
-in the first (or therefore, implicitly, second) group; must be specified
-if <code>df</code> or <code>n</code> is specified.  Note that the <em>n</em>th element of this vector
-must correspond to the <em>n</em>th element of the <code>t</code> vector.</p></td>
     </tr>
     </table>
 
@@ -159,19 +143,22 @@ must correspond to the <em>n</em>th element of the <code>t</code> vector.</p></t
 in the second column, the corresponding variances.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The formula that is used is the following (see e.g. Lakens, 2013):</p>
-<p>$$d= t \sqrt{(\frac{1}{n_1} + \frac{1}{n_2})}$$</p>
+    <p>The formula that is used is the following (see e.g. Borenstein et al., 2009):</p>
+<p>$$d= \frac{2 r_{pbs}}{\sqrt{1 - r^2}} $$</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Lakens, D. (2013) Calculating and reporting effect sizes to
-facilitate cumulative science: a practical primer for t-tests and ANOVAs.
-<em>Frontiers in Psychology, 4</em>, p. 863. doi: <a href='https://doi.org/10.3389/fpsyg.2013.00863'>10.3389/fpsyg.2013.00863</a></p>
+    <p>Borenstein, M., Hedges, L. V., Higgins, J. P. T., &amp;
+Rothstein, H. R. (2009) <em>Introduction to Meta-Analysis</em>, Chichester,
+UK: John Wiley &amp; Sons, Ltd.</p>
+<p>Also see:</p>
+<p>McGrath, R. E. &amp; Meyer, G. J. (2006) When Effect Sizes Disagree:
+The Case of <em>r</em> and <em>d</em>. <em>Psychological Methods, 11</em>, 386-401,
+doi:doi: <a href='https://doi.org/10.1037/1082-989X.11.4.386386'>10.1037/1082-989X.11.4.386386</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw pkg'>escalc</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/escalc/man/d_from_t_in.html'>d_from_t_in</a></span>(<span class='kw'>t</span> <span class='kw'>=</span> <span class='fl'>2.828427</span>,
-                    <span class='kw'>n1</span> <span class='kw'>=</span> <span class='fl'>126</span>,
-                    <span class='kw'>n2</span> <span class='kw'>=</span> <span class='fl'>89</span>);</div><div class='output co'>#&gt;          yi         vi
-#&gt; 1 0.3916372 0.01952916</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='kw pkg'>escalc</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/escalc/man/d_from_r_pb.html'>d_from_r_pb</a></span>(<span class='kw'>r_pb</span> <span class='kw'>=</span> <span class='fl'>.3</span>,
+                    <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+                    <span class='kw'>proportion</span><span class='kw'>=</span><span class='fl'>.5</span>);</div><div class='output co'>#&gt; <span class='error'>Error in escalc::d_from_r_pb(r_pb = 0.3, n = 100, proportion = 0.5): argument 2 matches multiple formal arguments</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
