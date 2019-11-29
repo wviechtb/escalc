@@ -3,6 +3,7 @@
 .PACKAGENAME <- 'escalc';
 .EFFECTSIZE_POINTESTIMATE_NAME_IN_DF <- 'yi';
 .EFFECTSIZE_VARIANCE_NAME_IN_DF <- 'vi';
+.EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF <- 'na_reason';
 
 ### This function creates consistent, userfriendly error messages.
 .errmsg <- function(...) {
@@ -209,5 +210,7 @@
 ### called like this: stop(.somefunction(..., callingFunction = .curfnfinder()))
 .curfnfinder <- function() as.character(sys.call(-3)[1])
 
-
-.cmicalc <- function(mi) ifelse(mi <= 1, NA, exp(lgamma(mi/2) - log(sqrt(mi/2)) - lgamma((mi-1)/2)))
+### Or should we remove this so that obsolete calls throw errors and can
+### be corrected?
+.cmicalc <-
+  cmicalc;

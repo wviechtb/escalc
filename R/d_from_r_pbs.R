@@ -112,7 +112,7 @@ d_from_r_pb <- function(r_pb,
   ################################## See meeting minutes 2019-09-27 and r_pb_from_d.R
   ##################################
     
-  d <- ifelse(biasCorrect, .cmicalc(m), 1) * d
+  d <- ifelse(biasCorrect, cmicalc(n1+n2-2), 1) * d
   
   ###--------------------------------------------------------------------------
   ### Effect size variance
@@ -121,6 +121,20 @@ d_from_r_pb <- function(r_pb,
   # https://stats.stackexchange.com/questions/144084/variance-of-cohens-d-statistic
   dVar <- ((n1 + n2) / (n1 * n2)) + ((d^2) / (2*(n1+n2)))
 
+
+  ###--------------------------------------------------------------------------
+  ### Specify reason for missing values, if any
+  ###--------------------------------------------------------------------------
+  
+  naReasons <- (rep(NA, length(d)))
+  
+  naReasons <-
+    ifelse(is.na(r_pb) | is.na(n1) | is.na(n2),
+           paste0("When running `d_from_r_pb`, arguments ",
+                  "`r_pb`, `n1` and/or `n`2 ",
+                  "had missing values (i.e. NA)."),
+           naReasons);
+  
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   ###
@@ -129,7 +143,8 @@ d_from_r_pb <- function(r_pb,
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   
-  return(stats::setNames(data.frame(d, dVar),
+  return(stats::setNames(data.frame(d, dVar, naReasons),
                          c(.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF,
-                           .EFFECTSIZE_VARIANCE_NAME_IN_DF)))
+                           .EFFECTSIZE_VARIANCE_NAME_IN_DF,
+                           .EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF)))
 }

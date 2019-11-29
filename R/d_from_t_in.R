@@ -256,7 +256,7 @@ d_from_t_in <- function(t,
 
   d <- t * multiplier
 
-  d <- ifelse(biasCorrect, .cmicalc(n1 + n2 - 2), 1) * d
+  d <- ifelse(biasCorrect, cmicalc(n1 + n2 - 2), 1) * d
 
   ###--------------------------------------------------------------------------
   ### Effect size variance
