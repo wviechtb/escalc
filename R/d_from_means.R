@@ -17,7 +17,7 @@
 #' @param n1,n2 A numerical vector with the sample sizes of the two groups
 #' formed by the dichotomous variable. Note that the *n*th element of these
 #' vectors must correspond to the *n*th elements of the `m1`, `m2` vectors.
-#' @param biasCorrect Logical to indicate if the *d*-values should be
+#' @param bias_correct Logical to indicate if the *d*-values should be
 #' bias-corrected. Can also be a vector.
 #' 
 #' @return A data frame with in the first column, Cohen's `d` values, and
@@ -42,7 +42,7 @@ d_from_t_in <- function(m1,
                         sd2,
                         n1,
                         n2,
-                        biasCorrect = FALSE) {
+                        bias_correct = FALSE) {
 
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -108,7 +108,7 @@ d_from_t_in <- function(m1,
   ###   - sd2
   ###   - n1
   ###   - n2
-  ###   ~ biasCorrect (has a default value)
+  ###   ~ bias_correct (has a default value)
   ###
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -120,7 +120,7 @@ d_from_t_in <- function(m1,
   
   d <- (m1 - m2) / pooledsd
   
-  d <- ifelse(biasCorrect, 1 - (3 / (4 * (n1 + n2) - 9)), 1) * d
+  d <- ifelse(bias_correct, 1 - (3 / (4 * (n1 + n2) - 9)), 1) * d
 
   ###--------------------------------------------------------------------------
   ### Effect size variance
