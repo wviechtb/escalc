@@ -12,25 +12,36 @@
 #' @param n1,n2 A numerical vector with the sample sizes of the two groups
 #' formed by the dichotomous variable. Note that the *n*th element of these
 #' vectors must correspond to the *n*th elements of the `F1` vector.
-#' @param biasCorrect Logical to indicate if the *d*-values should be
+#' @param df2 A numerical vector with one or more values of degrees of freedom
+#' 2.
+#' @param sign Numerical vector to indicate the sign of the d-values 
+#' (\code{+1} or \code{-1}).
+#' @param bias_correct Logical to indicate if the *d*-values should be
 #' bias-corrected. Can also be a vector.
 #' 
 #' @return A data frame with in the first column, Cohen's `d` values, and
 #' in the second column, the corresponding variances.
 #' 
-#' @references Thalheimer, W., & Cook, S. (2002, August). *How to calculate effect sizes from published
-#' research articles: A simplified methodology.*
+#' @references Thalheimer, W., & Cook, S. (2002, August). *How to calculate 
+#' effect sizes from published research articles: A simplified methodology.*
+#' @references Borenstein, M., Hedges, L. V., Higgins, J. P. T., & Rothstein,
+#'  H. R. (2009). *Introduction to Meta-Analysis*. Chichester, UK: John Wiley 
+#'  & Sons.
 #' 
 #' @examples
 #' escalc::d_from_F_oneway(F1 = 2.828427,
 #'                         n1 = 126,
-#'                         n2 = 89);
+#'                         n2 = 89,
+#'                         sign = +1);
+#' escalc::d_from_F_oneway
 #'
 #' @export
 d_from_F_oneway <- function(F1,
                             n1,
                             n2,
-                            biasCorrect = FALSE) {
+                            df2,
+                            sign,
+                            bias_correct = FALSE) {
   
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -47,13 +58,17 @@ d_from_F_oneway <- function(F1,
     stop(.errmsg(missing='F1',
                  callingFunction = .curfnfinder()))
   }
-  if (missing(n1)) {
+  if (missing(n1) & missing(df2)) {
     stop(.errmsg(missing='n1',
                  callingFunction = .curfnfinder()))
   }
-  if (missing(n2)) {
+  if (missing(n2) & missing(df2)) {
     stop(.errmsg(missing='n2',
                  callingFunction = .curfnfinder()))
+  }
+  if (missing(n1) | missing(n2)) {
+    n1 <- (df2+2)/2
+    n2 <- (df2+2)/2
   }
   
   ###--------------------------------------------------------------- t, n1 & n2
@@ -80,7 +95,8 @@ d_from_F_oneway <- function(F1,
   ###   - F1
   ###   - n1
   ###   - n2
-  ###   ~ biasCorrect (has a default value)
+  ###   - sign
+  ###   ~ bias_correct (has a default value)
   ###
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
