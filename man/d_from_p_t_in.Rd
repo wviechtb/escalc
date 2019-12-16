@@ -4,8 +4,15 @@
 \alias{d_from_p_t_in}
 \title{Obtain Cohen's \emph{d} from p-value of an independent samples t-test}
 \usage{
-d_from_p_t_in(p, n1, n2, side, sign, assumeHomoscedacity = TRUE,
-  biasCorrect = TRUE)
+d_from_p_t_in(
+  p,
+  n1,
+  n2,
+  side,
+  sign,
+  assumeHomoscedacity = TRUE,
+  biasCorrect = TRUE
+)
 }
 \arguments{
 \item{p}{Numerical vector with the (one- or two-sided) p-values.}

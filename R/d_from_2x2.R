@@ -2,10 +2,10 @@
 #'
 #' This function computes Cohen's *d* values based on 2x2 table data using the \sQuote{probit transformation}.
 #'
-#' @param a Numerical vector for the number of individuals in group 1 with outcome 1.
-#' @param b Numerical vector for the number of individuals in group 1 with outcome 2.
-#' @param c Numerical vector for the number of individuals in group 2 with outcome 1.
-#' @param d Numerical vector for the number of individuals in group 2 with outcome 2.
+#' @param a Numerical vector for the number of observations in group 1 with outcome 1.
+#' @param b Numerical vector for the number of observations in group 1 with outcome 2.
+#' @param c Numerical vector for the number of observations in group 2 with outcome 1.
+#' @param d Numerical vector for the number of observations in group 2 with outcome 2.
 #' @param biasCorrect Logical to indicate if the *d*-values should be bias-corrected. Can also be a vector.
 #'
 #' @return A numeric vector of Cohen's `d` values.

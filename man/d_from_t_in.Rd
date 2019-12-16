@@ -20,17 +20,6 @@ equal, as yet, no method exists for this conversion.}
 
 \item{biasCorrect}{Logical to indicate if the \emph{d}-values should be
 bias-corrected. Can also be a vector.}
-
-\item{df, n}{A numerical vector with the degrees of freedom (\code{df}) of \code{t} or
-the total sample size (\code{n}), which is \eqn{df + 2}. Either provide exactly
-one of \code{df} or \code{n}, and corresponding \code{proportion}s; \emph{or} provide \code{n1}
-and \code{n1}. Note that the \emph{n}th element of the \code{df} and \code{n} vectors must
-correspond to the \emph{n}th element of the \code{t} vector.}
-
-\item{proportion}{A numerical vector with the proportion of participants
-in the first (or therefore, implicitly, second) group; must be specified
-if \code{df} or \code{n} is specified.  Note that the \emph{n}th element of this vector
-must correspond to the \emph{n}th element of the \code{t} vector.}
 }
 \value{
 A data frame with in the first column, Cohen's \code{d} values, and

@@ -4,8 +4,14 @@
 \alias{d_from_r_pb}
 \title{Obtain Cohen's \emph{d} from the point biserial correlation \emph{r}}
 \usage{
-d_from_r_pb(r_pb, n1, n2, baseRateSensitive = FALSE,
-  biasCorrect = FALSE, crosssectionalSampling = FALSE)
+d_from_r_pb(
+  r_pb,
+  n1,
+  n2,
+  baseRateSensitive = FALSE,
+  biasCorrect = FALSE,
+  crosssectionalSampling = FALSE
+)
 }
 \arguments{
 \item{r_pb}{A numerical vector with one or more point biserial \emph{r} values.}
@@ -19,6 +25,8 @@ Cohen's d or not (see McGrath & Meyer, 2006).}
 
 \item{biasCorrect}{Logical to indicate if the \emph{d}-values should be
 bias-corrected. Can also be a vector.}
+
+\item{crosssectionalSampling}{Logical ...}
 }
 \value{
 A data frame with in the first column, Cohen's \code{d} values, and
@@ -34,8 +42,7 @@ The formula that is used is the following (see e.g. Borenstein et al., 2009):
 }
 \examples{
 escalc::d_from_r_pb(r_pb = .3,
-                    n = 100,
-                    proportion=.5);
+                    n1 = 50, n2 =50)
 
 }
 \references{

@@ -7,13 +7,13 @@
 d_from_2x2(a, b, c, d, biasCorrect = TRUE)
 }
 \arguments{
-\item{a}{Numerical vector for the number of individuals in group 1 with outcome 1.}
+\item{a}{Numerical vector for the number of observations in group 1 with outcome 1.}
 
-\item{b}{Numerical vector for the number of individuals in group 1 with outcome 2.}
+\item{b}{Numerical vector for the number of observations in group 1 with outcome 2.}
 
-\item{c}{Numerical vector for the number of individuals in group 2 with outcome 1.}
+\item{c}{Numerical vector for the number of observations in group 2 with outcome 1.}
 
-\item{d}{Numerical vector for the number of individuals in group 2 with outcome 2.}
+\item{d}{Numerical vector for the number of observations in group 2 with outcome 2.}
 
 \item{biasCorrect}{Logical to indicate if the \emph{d}-values should be bias-corrected. Can also be a vector.}
 }

@@ -17,18 +17,18 @@
 #' \deqn{d= t \sqrt{(\frac{1}{n_1} + \frac{1}{n_2})}}{d=t*sqrt(1/n1 + 1/n2))}
 #'
 #' @param t A numerical vector with one or more *t* values.
-##' @param df,n A numerical vector with the degrees of freedom (`df`) of `t` or
-##' the total sample size (`n`), which is \eqn{df + 2}. Either provide exactly
-##' one of `df` or `n`, and corresponding `proportion`s; *or* provide `n1`
-##' and `n1`. Note that the *n*th element of the `df` and `n` vectors must
-##' correspond to the *n*th element of the `t` vector.
+### @param df,n A numerical vector with the degrees of freedom (`df`) of `t` or
+### the total sample size (`n`), which is \eqn{df + 2}. Either provide exactly
+### one of `df` or `n`, and corresponding `proportion`s; *or* provide `n1`
+### and `n1`. Note that the *n*th element of the `df` and `n` vectors must
+### correspond to the *n*th element of the `t` vector.
 #' @param n1,n2 A numerical vector with the sample sizes of the two groups
 #' formed by the dichotomous variable. Note that the *n*th element of these
 #' vectors must correspond to the *n*th element of the `t` vector.
-##' @param proportion A numerical vector with the proportion of participants
-##' in the first (or therefore, implicitly, second) group; must be specified
-##' if `df` or `n` is specified.  Note that the *n*th element of this vector
-##' must correspond to the *n*th element of the `t` vector.
+### @param proportion A numerical vector with the proportion of participants
+### in the first (or therefore, implicitly, second) group; must be specified
+### if `df` or `n` is specified.  Note that the *n*th element of this vector
+### must correspond to the *n*th element of the `t` vector.
 #' @param assumeHomoscedacity Whether Student's t is used (assuming equal
 #' variances, or homoscedacity), or Welch's t (assuming unequal variances,
 #' or heteroscedacity). Note that if the variance in the two groups is not
