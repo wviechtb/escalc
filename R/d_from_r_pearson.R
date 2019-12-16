@@ -73,7 +73,7 @@ d_from_r_pearson <- function(r_pearson,
   return(stats::setNames(data.frame(rep(NA, length(r_pearson)),
                                     rep(NA, length(r_pearson)),
                                     rep(errorMsg, length(r_pearson))),
-                         c(.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF,
-                           .EFFECTSIZE_VARIANCE_NAME_IN_DF,
-                           .EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF)))
+                         c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))
 }
