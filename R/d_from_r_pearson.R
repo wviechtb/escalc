@@ -12,7 +12,7 @@
 #' @param r_pearson A numerical vector with one or more Pearson *r* values.
 #' @param n A numerical vector with the sample sizes of each Pearson *r*
 #' value. Note that the *n*th element of these vectors must correspond to
-#' the *n*th element of the `r_pbs` vector.
+#' the *n*th element of the `r_pearson` vector.
 #' @param baseRateSensitive Whether to compute the base rate sensitive
 #' Cohen's d or not (see McGrath & Meyer, 2006).
 #' @param biasCorrect Logical to indicate if the *d*-values should be
@@ -66,7 +66,7 @@ d_from_r_pearson <- function(r_pearson,
   ###--------------------------------------------------------------------------
 
   errorMsg <-
-    .functionalityNotImplementedMsg(conversion = "Cohen's d fropm Pearson's r",
+    .functionalityNotImplementedMsg(conversion = "Cohen's d from Pearson's r",
                                     reason = "nonexistent",
                                     callingFunction = "d_from_r_pearson");
 

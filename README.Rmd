@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
+
 # escalc
 
 The goal of escalc is to provide a home for various functions to convert effect sizes.
@@ -20,4 +21,4 @@ The goal of escalc is to provide a home for various functions to convert effect 
 
 ## Code of conduct
 
-Please note that the 'transformer' project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
+Please note that the 'escalc' project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
