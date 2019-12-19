@@ -60,7 +60,7 @@ opts$set <- function(...) {
   dots <- list(...);
   dotNames <- names(dots);
   names(dots) <-
-    paste0("rock.", dotNames);
+    paste0("escalc.", dotNames);
   if (all(dotNames %in% names(opts$defaults))) {
     do.call(options,
             dots);
