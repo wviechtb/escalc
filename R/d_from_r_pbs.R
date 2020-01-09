@@ -144,7 +144,7 @@ d_from_r_pb <- function(r_pb,
   ###--------------------------------------------------------------------------
 
   return(stats::setNames(data.frame(d, dVar, naReasons),
-                         c(.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF,
-                           .EFFECTSIZE_VARIANCE_NAME_IN_DF,
-                           .EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF)))
+                         c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))
 }

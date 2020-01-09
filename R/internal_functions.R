@@ -215,3 +215,15 @@
 .cmicalc <-
   cmicalc;
 
+
+minimalMissingMessage <- function(x, y) {
+  res <- 
+    ifelse(is.na(x) & is.na(y),
+           "Neither the effect size nor its variance could be computed.",
+           ifelse(is.na(x),
+                  "The effect size could not be computed.",
+                  ifelse(is.na(y),
+                         "The effect size's variance could not be computed.",
+                         "")))
+  return(res)
+}

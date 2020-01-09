@@ -45,7 +45,11 @@ d_from_2x2 <- function(a, b, c, d, biasCorrect = TRUE) {
   d <- cm * d
   v <- cm^2 * v # FIXME: not sure if we should do this
 
-  return(stats::setNames(data.frame(d, v),
+  minimalMissingMessage <-
+    minimalMissingMessage(d, v);
+ 
+  return(stats::setNames(data.frame(d, v, minimalMissingMessage),
                          c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
-                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"))))
+                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))
 }
