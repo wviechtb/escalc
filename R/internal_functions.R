@@ -6,16 +6,28 @@
 # .EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF <- 'na_reason';
 
 ### This function creates consistent, userfriendly error messages.
-.errmsg <- function(...) {
+.errmsg <- function(...,
+                    stopOnErrors = opts$get(stopOnErrors)) {
 
   args <- list(...)
 
+  errorLevel <- 0;
+  ### There are three error levels:
+  ###   0: no error
+  ###   0: no error (not a valid value for this option)
+  ###   1: proceed with caution: computed value comes with caveats
+  ###   2: fatal error: something could not be computed due to
+  ###                   statistical reasons (e.g. impossible input values)
+  ###   3: fatal error: something could not be computed due to
+  ###                   argument misspecification (e.g. mismatching arg lengths)
+  
   ### If `missing` is provided, a required argument is missing.
   if ('missing' %in% names(args)) {
     errorMsg <-
       paste0("Argument '",
              args$missing,
              "' is missing, but must be provided!")
+    errorLevel <- 2;
   }
 
   ### If `differentLengths` is provided, argument lengths differ
@@ -26,6 +38,7 @@
              " must all be the same, but are ",
              .vecTxt(args$differentLengths$argLengths),
              ".")
+    errorLevel <- 2;
   }
 
   ### If `conditionalMissing` is provided, one or more required arguments
@@ -41,6 +54,7 @@
              " you must also provide ",
              .conditionalMissingList(args$conditionalMissing$missing),
              ".")
+    errorLevel <- 2;
   }
 
   ### If `argumentRedundancy` is provided, conflicting arguments are provided
@@ -55,6 +69,7 @@
              " *or* ",
              .vecTxtQ(args$argumentRedundancy$argNames2),
              ", but not all together!")
+    errorLevel <- 2;
   }
 
   ### If `wrongType` is provided, an argument has the wrong type.
@@ -67,6 +82,7 @@
              "', but an object of class '",
              args$wrongType$requiredType,
              "' is required.")
+    errorLevel <- 2;
   }
 
   ### If `cantBeNullOrNA` is provided, an argument is NULL or NA but shouldn't be
@@ -79,6 +95,7 @@
                     'NULL',
                     'NA'),
              ", but this is not allowed.")
+    errorLevel <- 2;
   }
 
   ### If `invalidValue` is provided, an argument has an invalid value.
@@ -93,6 +110,7 @@
              " has to be ",
              args$invalidValue$validValues,
              ".")
+    errorLevel <- 2;
   }
 
   ### If `invalidValueCombo` is provided, two or more arguments combine
@@ -107,14 +125,16 @@
              "in an invalid way. Specifically, ",
              args$invalidValueCombo$validValues,
              ".")
+    errorLevel <- 2;
   }
-
-  return(paste0(errorMsg,
-                " You can get more details by typing:\n\n  ?",
-                .PACKAGENAME,
-                "::",
-                args$callingFunction))
-
+  
+  .debugMsg("In `", .curfnfinder(), "`, stopOnErrors=", stopOnErrors);
+  
+  return(.evalErrorLevel(errorMsg,
+                         errorLevel,
+                         callingFnc = args$callingFunction,
+                         stopOnErrors = stopOnErrors));
+  
 }
 
 .conditionalMissingList <- function(x) {
@@ -127,6 +147,8 @@
 
 .functionalityNotImplementedMsg <- function(...) {
 
+  errorLevel <- 3;
+  
   args <- list(...)
 
   if (args$reason == "nonexistent") {
@@ -146,13 +168,40 @@
              " has not yet been implemented.")
   }
 
-  return(paste0(errorMsg,
-                " You can get more details by typing:\n\n  ?",
-                .PACKAGENAME,
-                "::",
-                args$callingFunction))
+  .debugMsg("In `", .curfnfinder(), "`, stopOnErrors=", stopOnErrors);
+  
+  return(.evalErrorLevel(errorMsg,
+                         errorLevel,
+                         callingFnc = args$callingFunction,
+                         stopOnErrors = stopOnErrors));
+
 }
 
+### Depending on the error level, either throw an error (a more userfriendly
+### one if running interactively) or return the error message.
+.evalErrorLevel <- function(errMsg,
+                            errLvl,
+                            callingFnc,
+                            stopOnErrors = opts$get(stopOnErrors)) {
+  
+  .debugMsg("In `", .curfnfinder(), "`, stopOnErrors=", stopOnErrors);
+
+  ### Check whether we should stop
+  if (any(errLvl >= stopOnErrors)) {
+    ### If a user is working from the console, give extra
+    ### information
+    errMsg <- paste0(errMsg,
+                     " You can get more details by typing:\n\n  ?escalc::",
+                     callingFnc)
+    ### The error message may have more elements; we only need to
+    ### communicate about the first one with an errorlevel
+    stop(errMsg[min(which(errLvl >= stopOnErrors))])
+  } else {
+    ### If not stopping, store the error and return it
+    attr(errMsg, "errorLevel") <- errLvl
+    return(errMsg)    
+  }
+}
 
 .vecTxt <- function(vector, delimiter = ", ", useQuote = "",
                    firstDelimiter = NULL, lastDelimiter = " & ",
@@ -208,15 +257,71 @@
 
 ### Note: it skips back three frame numbers, so this assumes that it is being
 ### called like this: stop(.somefunction(..., callingFunction = .curfnfinder()))
-.curfnfinder <- function() as.character(sys.call(-3)[1])
+#.curfnfinder <- function() as.character(sys.call(-3)[1])
+
+### Hmm - we need this one anyway to make it work properly, apparently.
+.curfnfinder <- function(skipframes=0,
+         skipnames="(FUN)|(.+apply)|(replicate)",
+         retIfNone="Not in function",
+         retStack=FALSE,
+         extraPrefPerLevel="") {
+  prefix <- sapply(3 + skipframes+1:sys.nframe(), function(i) {
+    currv<-sys.call(sys.parent(n=i))[[1]]
+    return(currv)
+  });
+  prefix[grep(skipnames, prefix)] <- NULL;
+  prefix <- gsub("function \\(.*", "do.call", prefix);
+  if(length(prefix)==0) {
+    return(retIfNone);
+  } else if(retStack) {
+    return(paste(rev(prefix), collapse = "|"));
+  } else {
+    res <- as.character(unlist(prefix[1]));
+    res <- unlist(lapply(res, gsub, pattern=".*::", replacement=""));
+    if (length(prefix) > 1) {
+      res <- paste(paste(rep(extraPrefPerLevel, length(prefix) - 1), collapse=""), res, sep="");
+    }
+    return(res);
+  }
+}
+
 
 ### Or should we remove this so that obsolete calls throw errors and can
 ### be corrected?
-.cmicalc <-
-  cmicalc;
+#.cmicalc <- cmicalc
+### (commenting it out for now)
 
+### Prints a message, but only if the debugging option is set to TRUE
+.debugMsg <- function(...) {
+  if (opts$get(debugging)) {
+    cat("\nDebugging information: ",
+        paste0(..., sep=""), "\n", sep="");
+  }
+}
 
-minimalMissingMessage <- function(x, y) {
+.addToErrorStack <- function(errorStack,
+                             x,
+                             errorStackDelimiter = opts$get(errorStackDelimiter)) {
+  emptyErrorStackSlots <-
+    nchar(errorStack) == 0
+  emptyMessageSlots <-
+    nchar(x) == 0
+  res <-
+    ifelse(emptyErrorStackSlots & emptyMessageSlots,
+           "",
+           ifelse(emptyErrorStackSlots,
+                  x,
+                  ifelse(emptyMessageSlots,
+                         errorStack,
+                         paste0(errorStack,
+                                x,
+                                sep=errorStackDelimiter))))
+  return(res)
+}
+
+### Temporary function to 'explain' missing values
+.minimalMissingMessage <- function(x, y, callingFunction,
+                                   stopOnErrors = opts$get(stopOnErrors)) {
   res <- 
     ifelse(is.na(x) & is.na(y),
            "Neither the effect size nor its variance could be computed.",
@@ -225,5 +330,12 @@ minimalMissingMessage <- function(x, y) {
                   ifelse(is.na(y),
                          "The effect size's variance could not be computed.",
                          "")))
-  return(res)
+  
+  .debugMsg("In `", .curfnfinder(), "`, stopOnErrors=", stopOnErrors);
+  
+  return(.evalErrorLevel(res,
+                         2,
+                         callingFnc = callingFunction,
+                         stopOnErrors = stopOnErrors))
+  
 }

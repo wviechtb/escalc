@@ -32,6 +32,16 @@
 #'   \item{EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF}{The name of the column
 #'   with the missing values.}
 #'   
+#'   \item(stopOnError}{Default behavior regarding errors of varying severity. The
+#'   errorlevels are 0 (no error), 1 (proceed with caution: computed value comes
+#'   with caveats), 2 (fatal error: something could not be computed due to
+#'   statistical reasons, e.g. impossible input values), and 3 (fatal error:
+#'   something could not be computed due to argument misspecification, e.g. mismatching
+#'   argument lengths). Of these, 0 is not a valid value. When set to 3, only argument
+#'   misspecifications stop the functions; when set to 2, also situations
+#'   where effect sizes cannot be computed stop functions; and when set to 1, even
+#'   'warning'-level errors cause errors to be thrown.}
+#'   
 #' }
 #'
 #' @aliases opts set get reset
@@ -102,8 +112,32 @@ opts$reset <- function(...) {
 }
 
 opts$defaults <-
-  list(EFFECTSIZE_POINTESTIMATE_NAME_IN_DF = 'yi',
+  list(
+       
+       ### Column names for the dataframe that is returnes
+       EFFECTSIZE_POINTESTIMATE_NAME_IN_DF = 'yi',
        EFFECTSIZE_VARIANCE_NAME_IN_DF = 'vi',
-       EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF = 'na_reason'
+       EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF = 'na_reason',
+       
+       ### Default behavior regarding errors of varying severity. The
+       ### errorlevels are:
+       ###   0: no error
+       ###   1: proceed with caution: computed value comes with caveats
+       ###   2: fatal error: something could not be computed due to
+       ###                   statistical reasons (e.g. impossible input values)
+       ###   3: fatal error: something could not be computed due to
+       ###                   argument misspecification (e.g. mismatching arg lengths)
+       ### Of these, 0 is not a valid value. When set to 3, only argument
+       ### misspecifications stop the functions; when set to 2, also situations
+       ### where stuff can't be computed stops functions; and when set to 1, even
+       ### 'warning'-level errors are cause to stop the program.
+       stopOnErrors = 2,
+       
+       ### Whether you want extra information, as for debugging
+       debugging = FALSE,
+       
+       ### Error stack delimited
+       errorStackDelimiter = " | "
+       
   )
 

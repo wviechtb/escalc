@@ -7,6 +7,7 @@
 #' @param c Numerical vector for the number of observations in group 2 with outcome 1.
 #' @param d Numerical vector for the number of observations in group 2 with outcome 2.
 #' @param biasCorrect Logical to indicate if the *d*-values should be bias-corrected. Can also be a vector.
+#' @param stopOnErrors On which errors to stop (see the manual page for [escalc::opts()] for more details).
 #'
 #' @return A numeric vector of Cohen's `d` values.
 #'
@@ -20,7 +21,8 @@
 #'
 #' @export
 
-d_from_2x2 <- function(a, b, c, d, biasCorrect = TRUE) {
+d_from_2x2 <- function(a, b, c, d, biasCorrect = TRUE,
+                       stopOnErrors = opts$get(stopOnErrors)) {
 
   if (length(biasCorrect) == 1)
     biasCorrect <- rep(biasCorrect, length(a))
@@ -45,10 +47,12 @@ d_from_2x2 <- function(a, b, c, d, biasCorrect = TRUE) {
   d <- cm * d
   v <- cm^2 * v # FIXME: not sure if we should do this
 
-  minimalMissingMessage <-
-    minimalMissingMessage(d, v);
+  .minimalMissingMessage <-
+    .minimalMissingMessage(d, v,
+                           callingFunction = .curfnfinder(),
+                           stopOnErrors=stopOnErrors)
  
-  return(stats::setNames(data.frame(d, v, minimalMissingMessage),
+  return(stats::setNames(data.frame(d, v, .minimalMissingMessage),
                          c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))

@@ -18,6 +18,7 @@
 #' (\code{+1} or \code{-1}).
 #' @param bias_correct Logical to indicate if the *d*-values should be
 #' bias-corrected. Can also be a vector.
+#' @param stopOnErrors On which errors to stop (see the manual page for [escalc::opts()] for more details).
 #' 
 #' @return A data frame with in the first column, Cohen's `d` values, and
 #' in the second column, the corresponding variances.
@@ -41,7 +42,8 @@ d_from_F_oneway <- function(F1,
                             n2,
                             df2,
                             sign,
-                            bias_correct = FALSE) {
+                            bias_correct = FALSE,
+                            stopOnErrors = opts$get(stopOnErrors)) {
   
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -121,10 +123,12 @@ d_from_F_oneway <- function(F1,
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
   
-  minimalMissingMessage <-
-    minimalMissingMessage(d, dVar)
+  .minimalMissingMessage <-
+    .minimalMissingMessage(d, dVar,
+                           callingFunction = .curfnfinder(),
+                           stopOnErrors=stopOnErrors)
   
-  return(stats::setNames(data.frame(d, dVar, minimalMissingMessage),
+  return(stats::setNames(data.frame(d, dVar, .minimalMissingMessage),
                          c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))

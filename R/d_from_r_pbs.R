@@ -15,6 +15,7 @@
 #' @param biasCorrect Logical to indicate if the *d*-values should be
 #' bias-corrected. Can also be a vector.
 #' @param crosssectionalSampling Logical ...
+#' @param stopOnErrors On which errors to stop (see the manual page for [escalc::opts()] for more details).
 #'
 #' @return A data frame with in the first column, Cohen's `d` values, and
 #' in the second column, the corresponding variances.
@@ -39,7 +40,8 @@ d_from_r_pb <- function(r_pb,
                         n2,
                         baseRateSensitive = FALSE,
                         biasCorrect = FALSE,
-                        crosssectionalSampling = FALSE) {
+                        crosssectionalSampling = FALSE,
+                        stopOnErrors = opts$get(stopOnErrors)) {
 
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------

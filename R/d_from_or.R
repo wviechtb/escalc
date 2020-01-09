@@ -7,6 +7,7 @@
 #' @param ub Numerical vector for the upper bound of the confidence intervals.
 #' @param ci Scalar between 0 and 100 to indicate the confidence interval width (default is 95). Can also be a vector.
 #' @param dist Character string to indicate the distribution to assume for the underlying data. Either \code{"normal"} (the default) or \code{"logistic"}. Can also be a vector.
+#' @param stopOnErrors On which errors to stop (see the manual page for [escalc::opts()] for more details).
 #'
 #' @return A numeric vector of Cohen's `d` values.
 #'
@@ -21,7 +22,8 @@
 #'
 #' @export
 
-d_from_or <- function(or, lb, ub, ci=95, dist="normal") {
+d_from_or <- function(or, lb, ub, ci=95, dist="normal",
+                      stopOnErrors = opts$get(stopOnErrors)) {
 
   if (any(ci < 0 | ci > 100))
     stop("Argument 'ci' must be between 0 and 100.")
@@ -50,10 +52,12 @@ d_from_or <- function(or, lb, ub, ci=95, dist="normal") {
   d <- ifelse(dist == "logistic", lor * sqrt(3) / pi, lor * .607)
   v <- ifelse(dist == "logistic", selor^2 * 3 / pi^2, selor^2 * .607^2)
 
-  minimalMissingMessage <-
-    minimalMissingMessage(d, v)
+  .minimalMissingMessage <-
+    .minimalMissingMessage(d, v,
+                           callingFunction = .curfnfinder(),
+                           stopOnErrors=stopOnErrors)
   
-  return(stats::setNames(data.frame(d, v, minimalMissingMessage),
+  return(stats::setNames(data.frame(d, v, .minimalMissingMessage),
                          c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))

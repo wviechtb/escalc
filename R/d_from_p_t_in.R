@@ -8,6 +8,7 @@
 #' @param sign Numerical vector to indicate the sign of the d-values (\code{+1} or \code{-1}; only relevant for two-sided p-values; for one-sided p-values, this can be set to \code{NA}).
 #' @param assumeHomoscedacity Logical to indicate if the p-values come from independent samples t-tests that have assumed homoscedacity (equal variances in the two groups) or not. Can also be a vector.
 #' @param biasCorrect Logical to indicate if the *d*-values should be bias-corrected. Can also be a vector.
+#' @param stopOnErrors On which errors to stop (see the manual page for [escalc::opts()] for more details).
 #'
 #' @return A numeric vector of Cohen's `d` values.
 #'
@@ -17,7 +18,8 @@
 #' @export
 
 d_from_p_t_in <- function(p, n1, n2, side, sign,
-                          assumeHomoscedacity = TRUE, biasCorrect = TRUE) {
+                          assumeHomoscedacity = TRUE, biasCorrect = TRUE,
+                          stopOnErrors = opts$get(stopOnErrors)) {
 
   if (length(assumeHomoscedacity) == 1)
     assumeHomoscedacity <- rep(assumeHomoscedacity, length(p))
@@ -54,10 +56,12 @@ d_from_p_t_in <- function(p, n1, n2, side, sign,
 
   dVar <- 1/n1 + 1/n2 + d^2 / (2*(n1+n2))
 
-  minimalMissingMessage <-
-    minimalMissingMessage(d, dVar)
+  .minimalMissingMessage <-
+    .minimalMissingMessage(d, dVar,
+                           callingFunction = .curfnfinder(),
+                           stopOnErrors=stopOnErrors)
   
-  return(stats::setNames(data.frame(d, dVar, minimalMissingMessage),
+  return(stats::setNames(data.frame(d, dVar, .minimalMissingMessage),
                          c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))

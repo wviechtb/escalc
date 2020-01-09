@@ -1,7 +1,8 @@
 ### This is here mostly as documentation for later use; see meeting minutes from
 ### 2019-09-27 at https://docs.google.com/document/d/1Si3vgfwdosusvUde4-rZRo7yUTKSJEhCXetO0jz9AYk/edit
 
-r_pb_from_d <- function(d, n1, n2) {
+r_pb_from_d <- function(d, n1, n2,
+                        stopOnErrors = opts$get(stopOnErrors)) {
   
   n = n1 + n2
   m = n - 2

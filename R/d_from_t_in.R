@@ -35,6 +35,7 @@
 #' equal, as yet, no method exists for this conversion.
 #' @param biasCorrect Logical to indicate if the *d*-values should be
 #' bias-corrected. Can also be a vector.
+#' @param stopOnErrors On which errors to stop (see the manual page for [escalc::opts()] for more details).
 #'
 #' @return A data frame with in the first column, Cohen's `d` values, and
 #' in the second column, the corresponding variances.
@@ -53,7 +54,8 @@ d_from_t_in <- function(t,
                         n1,
                         n2,
                         assumeHomoscedacity = TRUE,
-                        biasCorrect = FALSE) {
+                        biasCorrect = FALSE,
+                        stopOnErrors = opts$get(stopOnErrors)) {
 
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -67,18 +69,24 @@ d_from_t_in <- function(t,
   ### Argument-checking - Check presence
   ###---------------------------------------------------------------- t, n1, n2
   if (missing(t)) {
-    stop(.errmsg(missing='t',
-                 callingFunction = .curfnfinder()))
+    ### The .errmsg function always stops if arguments are missing.
+    .errmsg(missing='t',
+            callingFunction = .curfnfinder(),
+            stopOnErrors=stopOnErrors)
   }
   if (missing(n1)) {
-    stop(.errmsg(missing='n1',
-                 callingFunction = .curfnfinder()))
+    ### The .errmsg function always stops if arguments are missing.
+    .errmsg(missing='n1',
+            callingFunction = .curfnfinder(),
+            stopOnErrors=stopOnErrors)
   }
   if (missing(n2)) {
-    stop(.errmsg(missing='n2',
-                 callingFunction = .curfnfinder()))
+    ### The .errmsg function always stops if arguments are missing.
+    .errmsg(missing='n2',
+            callingFunction = .curfnfinder(),
+            stopOnErrors=stopOnErrors)
   }
-
+  
   ### Retained just in case, for now
   #
   # ###-------------------------------------------------------------------- df, n
@@ -180,14 +188,28 @@ d_from_t_in <- function(t,
   ### Argument checking: lengths
   ###--------------------------------------------------------------- t, n1 & n2
 
+  ### Repeat vectors with length of 1
+  if (length(t) == 1) {
+    t <- rep(t, max(c(length(n1),
+                      length(n2))))
+  }
+  if (length(n1) == 1) {
+    n1 <- rep(n1, max(c(length(t),
+                        length(n2))))
+  }
+  if (length(n2) == 1) {
+    n2 <- rep(n2, max(c(length(t),
+                        length(n1))))
+  }
+
   #if (!missing(n1) && !missing(n2)) {
-    argLengths <- c(length(t), length(n2), length(n2));
-    if (length(unique(argLengths)) > 1) {
-      stop(.errmsg(differentLengths =
-                     list(argNames=c("t", "n1", "n2"),
-                          argLengths=argLengths),
-                   callingFunction = .curfnfinder()))
-    }
+  argLengths <- c(length(t), length(n2), length(n2));
+  if (length(unique(argLengths)) > 1) {
+    stop(.errmsg(differentLengths =
+                   list(argNames=c("t", "n1", "n2"),
+                        argLengths=argLengths),
+                 callingFunction = .curfnfinder()))
+  }
   #}
 
   # ### ------------------------------------------------------- t, df & proportion
@@ -238,10 +260,45 @@ d_from_t_in <- function(t,
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
 
+  ### Set empty error stack; we will add any errors we encounter to this list.
+  errorStack <- character(length(t))
+  
+  ### Check for missing values, and if any are encountered, either
+  ### throw an error, or store that reason in the error stack.
+  errorStack <-
+    .addToErrorStack(errorStack,
+                     ifelse(is.na(t),
+                            .errmsg(cantBeNullOrNA=list(argName='t',
+                                                        argVal = t),
+                                    callingFunction = .curfnfinder(),
+                                    stopOnErrors=stopOnErrors),
+                            ""))
+  errorStack <-
+    .addToErrorStack(errorStack,
+                     ifelse(is.na(n1),
+                            .errmsg(cantBeNullOrNA=list(argName='n1',
+                                                        argVal = n1),
+                                    callingFunction = .curfnfinder(),
+                                    stopOnErrors=stopOnErrors),
+                            ""))
+  errorStack <-
+    .addToErrorStack(errorStack,
+                     ifelse(is.na(n2),
+                            .errmsg(cantBeNullOrNA=list(argName='n2',
+                                                        argVal = n2),
+                                    callingFunction = .curfnfinder(),
+                                    stopOnErrors=stopOnErrors),
+                            ""))
+  
+  ### Check whether homoscedacity should be assumed, and throw an
+  ### error if need be.
   if (!assumeHomoscedacity) {
-    stop(.functionalityNotImplementedMsg(conversion = "d from an independent t-test with Welch's t",
-                                         reason = "nonexistent",
-                                         callingFunction = .curfnfinder()))
+    errorStack <-
+      .addToErrorStack(errorStack,
+             .functionalityNotImplementedMsg(conversion = "d from an independent t-test with Welch's t",
+                                             reason = "nonexistent",
+                                             callingFunction = .curfnfinder(),
+                                             stopOnErrors = stopOnErrors));
   }
 
   ###--------------------------------------------------------------------------
@@ -267,16 +324,30 @@ d_from_t_in <- function(t,
 
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
+  ### Set minimal error message for any remaining missing values that do not
+  ### yet have an explanation added to the error stack
+  ###--------------------------------------------------------------------------
+  ###--------------------------------------------------------------------------
+  
+  .debugMsg("In `d_from_t_in`, stopOnErrors=", stopOnErrors);
+  
+  errorStack <-
+    .addToErrorStack(errorStack,
+                     ifelse((is.na(d) | is.na(dVar)) & (nchar(errorStack) == 0),
+                            .minimalMissingMessage(d, dVar,
+                                                   callingFunction = .curfnfinder(),
+                                                    stopOnErrors=stopOnErrors),
+                            ""));
+
+  ###--------------------------------------------------------------------------
+  ###--------------------------------------------------------------------------
   ###
   ###  Prepare dataframe and return result
   ###
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
 
-  minimalMissingMessage <-
-    minimalMissingMessage(d, dVar)
-  
-  return(stats::setNames(data.frame(d, dVar, minimalMissingMessage),
+  return(stats::setNames(data.frame(d, dVar, errorStack),
                          c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
                            opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))

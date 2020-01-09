@@ -18,6 +18,7 @@
 #' @param biasCorrect Logical to indicate if the *d*-values should be
 #' bias-corrected. Can also be a vector.
 #' @param crosssectionalSampling Logical ...
+#' @param stopOnErrors On which errors to stop (see the manual page for [escalc::opts()] for more details).
 #'
 #' @return Invisibly, a data frame with three columns, as many rows as
 #' `r_pearson` and `n` are long, and filled with `NA`s for all cells except
@@ -35,7 +36,8 @@ d_from_r_pearson <- function(r_pearson,
                              n,
                              baseRateSensitive = FALSE,
                              biasCorrect = FALSE,
-                             crosssectionalSampling = FALSE) {
+                             crosssectionalSampling = FALSE,
+                             stopOnErrors = opts$get(stopOnErrors)) {
 
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
@@ -68,7 +70,8 @@ d_from_r_pearson <- function(r_pearson,
   errorMsg <-
     .functionalityNotImplementedMsg(conversion = "Cohen's d from Pearson's r",
                                     reason = "nonexistent",
-                                    callingFunction = "d_from_r_pearson");
+                                    callingFunction = "d_from_r_pearson",
+                                    stopOnErrors=stopOnErrors);
 
   return(stats::setNames(data.frame(rep(NA, length(r_pearson)),
                                     rep(NA, length(r_pearson)),
