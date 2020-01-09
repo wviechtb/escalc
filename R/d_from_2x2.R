@@ -46,6 +46,6 @@ d_from_2x2 <- function(a, b, c, d, biasCorrect = TRUE) {
   v <- cm^2 * v # FIXME: not sure if we should do this
 
   return(stats::setNames(data.frame(d, v),
-                         c(.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF,
-                           .EFFECTSIZE_VARIANCE_NAME_IN_DF)))
+                         c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"))))
 }
