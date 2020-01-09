@@ -1,9 +1,9 @@
 ### Internal variables to allow flexibility, should we need it in the future,
 ### yet retain consistency
-.PACKAGENAME <- 'escalc';
-.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF <- 'yi';
-.EFFECTSIZE_VARIANCE_NAME_IN_DF <- 'vi';
-.EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF <- 'na_reason';
+# .PACKAGENAME <- 'escalc';
+# .EFFECTSIZE_POINTESTIMATE_NAME_IN_DF <- 'yi';
+# .EFFECTSIZE_VARIANCE_NAME_IN_DF <- 'vi';
+# .EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF <- 'na_reason';
 
 ### This function creates consistent, userfriendly error messages.
 .errmsg <- function(...) {
