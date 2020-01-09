@@ -313,9 +313,9 @@
                   x,
                   ifelse(emptyMessageSlots,
                          errorStack,
-                         paste0(errorStack,
-                                x,
-                                sep=errorStackDelimiter))))
+                         paste(errorStack,
+                               x,
+                               sep=errorStackDelimiter))))
   return(res)
 }
 
