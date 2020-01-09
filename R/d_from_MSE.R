@@ -125,7 +125,12 @@ d_from_MSE <- function(MSE,
   ###--------------------------------------------------------------------------
   ###--------------------------------------------------------------------------
 
-  return(stats::setNames(data.frame(d, dVar),
+  minimalMissingMessage <-
+    minimalMissingMessage(d, dVar)
+  
+  return(stats::setNames(data.frame(d, dVar, minimalMissingMessage),
                          c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
-                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"))))
+                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))
+  
 }

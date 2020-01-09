@@ -50,7 +50,12 @@ d_from_or <- function(or, lb, ub, ci=95, dist="normal") {
   d <- ifelse(dist == "logistic", lor * sqrt(3) / pi, lor * .607)
   v <- ifelse(dist == "logistic", selor^2 * 3 / pi^2, selor^2 * .607^2)
 
-  return(stats::setNames(data.frame(d, v),
+  minimalMissingMessage <-
+    minimalMissingMessage(d, v)
+  
+  return(stats::setNames(data.frame(d, v, minimalMissingMessage),
                          c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
-                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"))))
+                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_MISSING_MESSAGE_NAME_IN_DF"))))
+
 }
