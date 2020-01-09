@@ -38,10 +38,10 @@
 #'
 #' @usage opts
 #'
-#' @examples ### Get the default utteranceMarker
+#' @examples ### Get the default name for the point estmate
 #' escalc::opts$get(EFFECTSIZE_POINTESTIMATE_NAME_IN_DF);
 #'
-#' ### Set it to a custom version, so that every line starts with a pipe
+#' ### Set it to a custom version
 #' escalc::opts$set(EFFECTSIZE_POINTESTIMATE_NAME_IN_DF = "value_i");
 #'
 #' ### Check that it worked
