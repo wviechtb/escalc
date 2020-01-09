@@ -126,6 +126,6 @@ d_from_MSE <- function(MSE,
   ###--------------------------------------------------------------------------
 
   return(stats::setNames(data.frame(d, dVar),
-                         c(.EFFECTSIZE_POINTESTIMATE_NAME_IN_DF,
-                           .EFFECTSIZE_VARIANCE_NAME_IN_DF)))
+                         c(opts$get("EFFECTSIZE_POINTESTIMATE_NAME_IN_DF"),
+                           opts$get("EFFECTSIZE_VARIANCE_NAME_IN_DF"))))
 }
